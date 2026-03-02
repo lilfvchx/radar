@@ -1,9 +1,12 @@
-import React from 'react';
 import { useOsintStore } from '../../osint/osint.store';
 import { useOsintNews } from '../../osint/hooks/useOsintNews';
 import { useIntelBrief } from '../../osint/hooks/useIntelBrief';
-import { Cpu, Radio, Globe } from 'lucide-react';
+import { Cpu, Radio } from 'lucide-react';
 import clsx from 'clsx';
+
+const CATEGORIES = ["All", "Politics & Society", "Business & Economy", "Military", "Science & Technology", "Local News"] as const;
+const TIME_FORMATTER = new Intl.DateTimeFormat(undefined, { timeStyle: 'short' });
+const DATE_FORMATTER = new Intl.DateTimeFormat(undefined, { dateStyle: 'short' });
 
 export function AIInsightsPanel() {
     const { currentRegionLat, currentRegionLon, selectedCategory, setSelectedCategory } = useOsintStore();
@@ -21,7 +24,7 @@ export function AIInsightsPanel() {
             </div>
 
             <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-2">
-                {(["All", "Politics & Society", "Business & Economy", "Military", "Science & Technology", "Local News"] as const).map(cat => (
+                {CATEGORIES.map(cat => (
                     <button
                         key={cat}
                         onClick={() => setSelectedCategory(cat as any)}
@@ -81,7 +84,7 @@ export function AIInsightsPanel() {
                     <div key={`intercept-${idx}`} className="border-l-2 border-red-500 pl-3 py-2 bg-red-500/10 rounded-r">
                         <div className="text-red-400 font-bold text-[10px] mb-1 tracking-widest flex justify-between">
                             <span>[CRITICAL INTERCEPT]</span>
-                            <span>{new Date(intercept.pubDate).toLocaleTimeString()}</span>
+                            <span>{TIME_FORMATTER.format(new Date(intercept.pubDate))}</span>
                         </div>
                         <div className="text-white text-[11px] leading-relaxed font-semibold">
                             {intercept.title}
@@ -94,7 +97,7 @@ export function AIInsightsPanel() {
                     <div key={`news-${idx}`} className="border flex flex-col gap-1 border-white/5 bg-black/40 p-2.5 rounded hover:border-white/20 transition-colors">
                         <div className="text-gray-500 text-[9px] flex justify-between uppercase tracking-wider">
                             <span>{item.source}</span>
-                            <span>{new Date(item.pubDate).toLocaleDateString()}</span>
+                            <span>{DATE_FORMATTER.format(new Date(item.pubDate))}</span>
                         </div>
                         <a href={item.link} target="_blank" rel="noreferrer" className="text-gray-200 text-xs hover:text-purple-400 transition-colors font-semibold block cursor-pointer leading-relaxed">
                             {item.title}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Camera } from 'lucide-react';
 import clsx from 'clsx';
 
@@ -42,6 +42,7 @@ export function LiveWebcamsPanel() {
                     className="w-full h-full absolute inset-0"
                     src={`https://www.youtube-nocookie.com/embed/${activeFeed.fallbackVideoId}?autoplay=1&mute=1&controls=0&modestbranding=1&playsinline=1&rel=0`}
                     title={`${activeFeed.city} live webcam`}
+                    loading="lazy"
                     allow="autoplay; encrypted-media; picture-in-picture"
                     allowFullScreen
                 ></iframe>

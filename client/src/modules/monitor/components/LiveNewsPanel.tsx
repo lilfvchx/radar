@@ -1,4 +1,3 @@
-import React from 'react';
 import { Tv } from 'lucide-react';
 
 export function LiveNewsPanel() {
@@ -20,6 +19,7 @@ export function LiveNewsPanel() {
                     className="w-full h-full absolute inset-0"
                     src="https://www.youtube-nocookie.com/embed/dp8PhLsUcFE?autoplay=1&mute=1&controls=0&modestbranding=1&playsinline=1&rel=0" // Bloomberg Live or similar
                     title="Live News"
+                    loading="lazy"
                     allow="autoplay; encrypted-media; picture-in-picture"
                     allowFullScreen
                 ></iframe>

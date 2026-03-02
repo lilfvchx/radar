@@ -1,9 +1,16 @@
-import React, { useRef } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import Map, { NavigationControl } from 'react-map-gl/maplibre';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import type { MapRef } from 'react-map-gl/maplibre';
 import { useThemeStore } from '../../../ui/theme/theme.store';
 import { SATELLITE_STYLE, DARK_STYLE } from '../../../lib/mapStyles';
 import { useOsintStore } from '../../osint/osint.store';
+
+const INITIAL_VIEW_STATE = {
+    longitude: 0,
+    latitude: 20,
+    zoom: 1.5
+};
 
 export function MonitorMap() {
     const mapRef = useRef<MapRef>(null);
@@ -12,20 +19,26 @@ export function MonitorMap() {
 
     const activeMapStyle = mapLayer === 'satellite' ? SATELLITE_STYLE : DARK_STYLE;
 
-    const onClick = (e: import('maplibre-gl').MapMouseEvent) => {
+    const onClick = useCallback((e: import('maplibre-gl').MapMouseEvent) => {
         // Set OSINT region on click, just like FlightsMap
         setCurrentRegion(e.lngLat.lat, e.lngLat.lng);
-    };
+    }, [setCurrentRegion]);
+
+    // Force map resize on mount to fix MapLibre zero-dimension rendering bug in flex/grid layouts
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (mapRef.current) {
+                mapRef.current.resize();
+            }
+        }, 100);
+        return () => clearTimeout(timeout);
+    }, []);
 
     return (
-        <div className="absolute inset-0 bg-black relative">
+        <div className="w-full h-full relative bg-black">
             <Map
                 ref={mapRef}
-                initialViewState={{
-                    longitude: 0,
-                    latitude: 20,
-                    zoom: 1.5
-                }}
+                initialViewState={INITIAL_VIEW_STATE}
                 mapStyle={activeMapStyle}
                 styleDiffing={false}
                 onClick={onClick}

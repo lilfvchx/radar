@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Crosshair, Plane, Ship, ShieldAlert, Shield, ShieldCheck } from 'lucide-react';
 import clsx from 'clsx';
@@ -12,6 +11,26 @@ interface TheaterPosture {
     assessedAt: number;
 }
 
+const getPostureIcon = (level: string) => {
+    switch (level) {
+        case 'critical': return <ShieldAlert size={20} className="text-red-500 animate-pulse" />;
+        case 'elevated': return <Shield size={20} className="text-orange-500" />;
+        default: return <ShieldCheck size={20} className="text-green-500" />;
+    }
+};
+
+const getPostureColor = (level: string) => {
+    switch (level) {
+        case 'critical': return 'text-red-400 bg-red-500/10 border-red-500/30';
+        case 'elevated': return 'text-orange-400 bg-orange-500/10 border-orange-500/30';
+        default: return 'text-green-400 bg-green-500/10 border-green-500/30';
+    }
+};
+
+const formatTheaterName = (id: string) => {
+    return id.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+};
+
 export function StrategicPosturePanel() {
     const { data: theaters, isLoading, error } = useQuery({
         queryKey: ['monitor', 'posture'],
@@ -23,26 +42,6 @@ export function StrategicPosturePanel() {
         },
         refetchInterval: 15000, // 15s
     });
-
-    const getPostureIcon = (level: string) => {
-        switch (level) {
-            case 'critical': return <ShieldAlert size={20} className="text-red-500 animate-pulse" />;
-            case 'elevated': return <Shield size={20} className="text-orange-500" />;
-            default: return <ShieldCheck size={20} className="text-green-500" />;
-        }
-    };
-
-    const getPostureColor = (level: string) => {
-        switch (level) {
-            case 'critical': return 'text-red-400 bg-red-500/10 border-red-500/30';
-            case 'elevated': return 'text-orange-400 bg-orange-500/10 border-orange-500/30';
-            default: return 'text-green-400 bg-green-500/10 border-green-500/30';
-        }
-    };
-
-    const formatTheaterName = (id: string) => {
-        return id.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-    };
 
     return (
         <div className="flex flex-col h-full space-y-4">

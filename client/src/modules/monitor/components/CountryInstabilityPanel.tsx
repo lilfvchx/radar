@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Activity, AlertTriangle, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import clsx from 'clsx';
@@ -15,6 +14,20 @@ interface CIIScore {
     };
 }
 
+const getScoreColor = (score: number) => {
+    if (score >= 75) return 'text-red-500 bg-red-500/10 border-red-500/30';
+    if (score >= 50) return 'text-orange-500 bg-orange-500/10 border-orange-500/30';
+    if (score >= 25) return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/30';
+    return 'text-green-500 bg-green-500/10 border-green-500/30';
+};
+
+const getProgressColor = (score: number) => {
+    if (score >= 75) return 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]';
+    if (score >= 50) return 'bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]';
+    if (score >= 25) return 'bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)]';
+    return 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]';
+};
+
 export function CountryInstabilityPanel() {
     const { data, isLoading, error } = useQuery({
         queryKey: ['monitor', 'cii'],
@@ -26,20 +39,6 @@ export function CountryInstabilityPanel() {
         },
         refetchInterval: 30000, // 30s
     });
-
-    const getScoreColor = (score: number) => {
-        if (score >= 75) return 'text-red-500 bg-red-500/10 border-red-500/30';
-        if (score >= 50) return 'text-orange-500 bg-orange-500/10 border-orange-500/30';
-        if (score >= 25) return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/30';
-        return 'text-green-500 bg-green-500/10 border-green-500/30';
-    };
-
-    const getProgressColor = (score: number) => {
-        if (score >= 75) return 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]';
-        if (score >= 50) return 'bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]';
-        if (score >= 25) return 'bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)]';
-        return 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]';
-    };
 
     return (
         <div className="flex flex-col h-full space-y-4">
