@@ -14,8 +14,12 @@
         "dotenv": "^16.4.5",
         "duckdb": "^1.4.4",
         "express": "^4.21.0",
+        "i18n-iso-countries": "^7.14.0",
         "parquetjs-lite": "^0.8.7",
-        "ws": "^8.19.0"
+        "rss-parser": "^3.13.0",
+        "which-country": "^1.0.0",
+        "ws": "^8.19.0",
+        "yaml": "^2.8.2"
     },
     "devDependencies": {
         "@types/cors": "^2.8.17",

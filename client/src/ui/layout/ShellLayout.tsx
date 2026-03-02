@@ -5,6 +5,7 @@ import { clsx } from 'clsx';
 import '../theme/crt.css';
 import '../theme/flir.css';
 import '../theme/eo.css';
+import { OsintDrawer } from '../../modules/osint/OsintDrawer';
 
 interface ShellLayoutProps {
     children: ReactNode;
@@ -18,6 +19,7 @@ export const ShellLayout: React.FC<ShellLayoutProps> = ({ children }) => {
             <TopNav />
             <main className="flex-1 relative bg-intel-bg">
                 {children}
+                <OsintDrawer />
             </main>
         </div>
     );

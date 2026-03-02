@@ -10,7 +10,8 @@ import { useThemeStore } from '../../ui/theme/theme.store';
 import { MapLayerControl } from '../flights/components/MapLayerControl';
 import { MaritimeToolbar } from './components/MaritimeToolbar';
 import { MaritimeRightDrawer } from './components/MaritimeRightDrawer';
-import { SATELLITE_STYLE, MAP_STYLE_URLS } from '../../lib/mapStyles';
+import { useOsintStore } from '../osint/osint.store';
+import { SATELLITE_STYLE, LIGHT_STYLE, DARK_STYLE, STREET_STYLE } from '../../lib/mapStyles';
 
 
 const ICON_URLS = {
@@ -41,6 +42,7 @@ export const MaritimePage: React.FC = () => {
     // Fine-grained selectors
     const mapProjection = useThemeStore(s => s.mapProjection);
     const mapLayer = useThemeStore(s => s.mapLayer);
+    const setCurrentRegion = useOsintStore(s => s.setCurrentRegion);
 
     useEffect(() => {
         if (!imagesReady) {
@@ -69,11 +71,11 @@ export const MaritimePage: React.FC = () => {
 
     const activeMapStyle = useMemo(() => {
         switch (mapLayer) {
-            case 'light': return MAP_STYLE_URLS.light;
-            case 'street': return MAP_STYLE_URLS.street;
+            case 'light': return LIGHT_STYLE;
+            case 'street': return STREET_STYLE;
             case 'satellite': return SATELLITE_STYLE;
             case 'dark':
-            default: return MAP_STYLE_URLS.dark;
+            default: return DARK_STYLE;
         }
     }, [mapLayer]);
 
@@ -141,6 +143,11 @@ export const MaritimePage: React.FC = () => {
         }
     }, []);
 
+    const onMoveEnd = useCallback((e: { target: import('maplibre-gl').Map }) => {
+        const center = e.target.getCenter();
+        setCurrentRegion(center.lat, center.lng);
+    }, [setCurrentRegion]);
+
     const onStyleImageMissing = useCallback((e: { id: string; target: import('maplibre-gl').Map }) => {
         const id = e.id;
         const map = e.target;
@@ -177,6 +184,7 @@ export const MaritimePage: React.FC = () => {
                     styleDiffing={false}
                     interactiveLayerIds={['vessel-points']}
                     onClick={onClick}
+                    onMoveEnd={onMoveEnd}
                     cursor={selectedMmsi ? 'pointer' : 'crosshair'}
                     onLoad={onMapLoad}
                     onStyleData={onStyleData}
@@ -237,6 +245,7 @@ export const MaritimePage: React.FC = () => {
                             />
                         </Source>
                     )}
+
                 </Map>
             </div>
 

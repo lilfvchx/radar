@@ -71,7 +71,7 @@ export const MaritimeRightDrawer: React.FC<MaritimeRightDrawerProps> = ({ vessel
         tick();
         intervalRef.current = setInterval(tick, 1000);
         return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-    }, [vessel]); // only restart when lastUpdate changes (new AIS packet)
+    }, [vessel, vessel?.lastUpdate]); // restart when lastUpdate changes (new AIS packet) or vessel changes
 
     if (!vessel) return null;
 

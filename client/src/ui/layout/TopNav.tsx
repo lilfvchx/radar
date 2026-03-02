@@ -1,5 +1,6 @@
 import React from 'react';
 import { useThemeStore } from '../theme/theme.store';
+import { useOsintStore } from '../../modules/osint/osint.store';
 
 export const TopNav: React.FC = () => {
     // Fine-grained selectors — each only re-renders TopNav when its own slice changes.
@@ -9,6 +10,8 @@ export const TopNav: React.FC = () => {
     const setMapProjection = useThemeStore(s => s.setMapProjection);
     const activeModule = useThemeStore(s => s.activeModule);
     const setActiveModule = useThemeStore(s => s.setActiveModule);
+    const osintDrawerOpen = useOsintStore(s => s.osintDrawerOpen);
+    const setOsintDrawerOpen = useOsintStore(s => s.setOsintDrawerOpen);
 
     return (
         <header className="h-14 border-b border-intel-panel bg-intel-bg/90 backdrop-blur-md flex items-center px-4 justify-between z-10 relative">
@@ -26,6 +29,13 @@ export const TopNav: React.FC = () => {
                         className={`px-4 py-1.5 ${activeModule === 'maritime' ? 'bg-[#10b981]/20 border-[#10b981] text-[#10b981]' : 'border-transparent text-intel-text hover:bg-intel-panel opacity-60 hover:opacity-100'} border rounded text-xs font-semibold tracking-wider transition-all`}
                     >
                         MARITIME
+                    </button>
+
+                    <button
+                        onClick={() => setOsintDrawerOpen(!osintDrawerOpen)}
+                        className={`px-4 py-1.5 ${osintDrawerOpen ? 'bg-red-500/20 border-red-500 text-red-500' : 'border-transparent text-intel-text hover:bg-intel-panel opacity-60 hover:opacity-100'} border rounded text-xs font-semibold tracking-wider transition-all`}
+                    >
+                        OSINT
                     </button>
                     <button className="px-4 py-1.5 text-intel-text opacity-40 cursor-not-allowed text-xs font-semibold tracking-wider" disabled>GROUND</button>
                 </nav>

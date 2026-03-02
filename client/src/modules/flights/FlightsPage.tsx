@@ -13,8 +13,9 @@ import { FlightsLeftPanel } from './components/FlightsLeftPanel';
 import { FlightsRightDrawer } from './components/FlightsRightDrawer';
 import { FlightsStatusBar } from './components/FlightsStatusBar';
 import { MapLayerControl } from './components/MapLayerControl';
+import { useOsintStore } from '../osint/osint.store';
 import { useThemeStore } from '../../ui/theme/theme.store';
-import { SATELLITE_STYLE, MAP_STYLE_URLS } from '../../lib/mapStyles';
+import { SATELLITE_STYLE, LIGHT_STYLE, DARK_STYLE, STREET_STYLE } from '../../lib/mapStyles';
 
 const trackManager = new TrackManager(5);
 
@@ -79,6 +80,7 @@ export const FlightsPage: React.FC = () => {
     const onboardMode = useFlightsStore(s => s.onboardMode);
     // Screen pixel position of the aircraft icon (for HTML overlay)
     const [iconScreenPos, setIconScreenPos] = useState<{ x: number, y: number } | null>(null);
+    const setCurrentRegion = useOsintStore(s => s.setCurrentRegion);
 
     useEffect(() => {
         if (!imagesReady) {
@@ -120,11 +122,11 @@ export const FlightsPage: React.FC = () => {
         // Force satellite when in 3D onboard mode so the ground is visible
         if (onboardMode) return SATELLITE_STYLE;
         switch (mapLayer) {
-            case 'light': return MAP_STYLE_URLS.light;
-            case 'street': return MAP_STYLE_URLS.street;
+            case 'light': return LIGHT_STYLE;
+            case 'street': return STREET_STYLE;
             case 'satellite': return SATELLITE_STYLE;
             case 'dark':
-            default: return MAP_STYLE_URLS.dark;
+            default: return DARK_STYLE;
         }
     }, [mapLayer, onboardMode]);
 
@@ -204,6 +206,11 @@ export const FlightsPage: React.FC = () => {
             if (store.onboardMode) store.setOnboardMode(false);
         }
     }, []);
+
+    const onMoveEnd = useCallback((e: { target: import('maplibre-gl').Map }) => {
+        const center = e.target.getCenter();
+        setCurrentRegion(center.lat, center.lng);
+    }, [setCurrentRegion]);
 
     const onStyleData = useCallback((e: { dataType: string; target: import('maplibre-gl').Map }) => {
         // Only act on full style reloads, not on individual tile/source load events.
@@ -360,6 +367,7 @@ export const FlightsPage: React.FC = () => {
                     interactiveLayerIds={['aircraft-points']}
                     onClick={onClick}
                     onMoveStart={onMoveStart}
+                    onMoveEnd={onMoveEnd}
                     cursor={selectedIcao24 ? "pointer" : "crosshair"}
                     onLoad={onMapLoad}
                     onStyleData={onStyleData}
