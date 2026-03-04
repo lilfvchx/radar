@@ -34,7 +34,7 @@ export const MaritimeToolbar: React.FC<MaritimeToolbarProps> = ({
     }, [setFilter]);
 
     return (
-        <div className="absolute top-0 left-0 right-0 h-10 bg-intel-panel border-b border-intel-border/50 flex items-center px-4 justify-between z-10 shrink-0 font-mono shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+        <div className="absolute top-0 left-0 right-0 h-12 tech-panel z-10 flex items-center px-4 justify-between shrink-0 font-mono !border-t-0 !border-l-0 !border-r-0 shadow-[0_15px_30px_rgba(0,0,0,0.8)]">
             <div className="flex items-center h-full space-x-6">
                 <div className="flex items-center space-x-4">
                     <span className="text-[10px] text-intel-text opacity-50 uppercase tracking-widest font-bold">Stats</span>
@@ -54,7 +54,7 @@ export const MaritimeToolbar: React.FC<MaritimeToolbarProps> = ({
                             type="text"
                             value={localName}
                             onChange={handleNameChange}
-                            className="bg-intel-bg border border-white/10 text-white text-xs px-2 py-0.5 w-24 focus:outline-none focus:border-intel-accent focus:ring-1 focus:ring-intel-accent/50"
+                            className="bg-black/60 border border-white/10 text-intel-text-light text-xs px-2 py-1 w-24 focus:outline-none focus:border-intel-accent focus:shadow-[0_0_10px_rgba(0,229,255,0.3)] transition-all"
                             placeholder="ANY"
                         />
                     </div>

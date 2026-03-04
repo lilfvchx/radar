@@ -21,9 +21,9 @@ const getPostureIcon = (level: string) => {
 
 const getPostureColor = (level: string) => {
     switch (level) {
-        case 'critical': return 'text-red-400 bg-red-500/10 border-red-500/30';
-        case 'elevated': return 'text-orange-400 bg-orange-500/10 border-orange-500/30';
-        default: return 'text-green-400 bg-green-500/10 border-green-500/30';
+        case 'critical': return 'text-red-400 bg-red-500/5 border-red-500/40 hover:bg-red-500/10 hover:border-red-500/60 shadow-[inset_0_0_15px_rgba(239,68,68,0.1)]';
+        case 'elevated': return 'text-orange-400 bg-orange-500/5 border-orange-500/40 hover:bg-orange-500/10 hover:border-orange-500/60 shadow-[inset_0_0_15px_rgba(249,115,22,0.1)]';
+        default: return 'text-intel-success bg-intel-success/5 border-intel-success/40 hover:bg-intel-success/10 hover:border-intel-success/60 shadow-[inset_0_0_15px_rgba(16,185,129,0.1)]';
     }
 };
 
@@ -45,12 +45,12 @@ export function StrategicPosturePanel() {
 
     return (
         <div className="flex flex-col h-full space-y-4">
-            <div className="flex items-center justify-between uppercase tracking-widest text-xs font-bold text-gray-400 border-b border-white/10 pb-2">
+            <div className="flex items-center justify-between uppercase tracking-widest text-xs font-bold text-intel-text-light tech-panel-header pb-2">
                 <div className="flex items-center gap-2">
-                    <Crosshair size={14} className="text-red-400" />
+                    <Crosshair size={14} className="text-intel-accent drop-shadow-[0_0_8px_var(--color-intel-accent)]" />
                     <span>Strategic Posture</span>
                 </div>
-                {isLoading && <span className="text-red-400 animate-pulse">Scanning...</span>}
+                {isLoading && <span className="text-intel-accent animate-pulse">SCANNING...</span>}
             </div>
 
             <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
@@ -68,8 +68,8 @@ export function StrategicPosturePanel() {
                 ) : (
                     theaters.map((theater) => (
                         <div key={theater.theater} className={clsx(
-                            "relative overflow-hidden p-3 rounded-lg border",
-                            "backdrop-blur-sm transition-all duration-300 hover:bg-white/5",
+                            "relative overflow-hidden p-3 border",
+                            "backdrop-blur-sm transition-all duration-300",
                             getPostureColor(theater.postureLevel)
                         )}>
                             <div className="flex justify-between items-start mb-3 relative z-10">
@@ -90,18 +90,18 @@ export function StrategicPosturePanel() {
                             </div>
 
                             <div className="grid grid-cols-2 gap-2 relative z-10">
-                                <div className="flex items-center gap-2 bg-black/40 rounded p-2 border border-white/5">
-                                    <Plane size={16} className="text-blue-400" />
+                                <div className="flex items-center gap-2 bg-black/40 p-2 border border-intel-accent/10">
+                                    <Plane size={16} className="text-intel-accent opacity-70" />
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] text-gray-500 uppercase tracking-wider">Air Assets</span>
-                                        <span className="font-mono text-sm">{theater.activeFlights}</span>
+                                        <span className="text-[10px] text-intel-text uppercase tracking-wider">Air Assets</span>
+                                        <span className="font-mono text-sm font-bold text-intel-text-light">{theater.activeFlights}</span>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 bg-black/40 rounded p-2 border border-white/5">
-                                    <Ship size={16} className="text-cyan-400" />
+                                <div className="flex items-center gap-2 bg-black/40 p-2 border border-intel-accent/10">
+                                    <Ship size={16} className="text-intel-accent opacity-70" />
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] text-gray-500 uppercase tracking-wider">Naval Assets</span>
-                                        <span className="font-mono text-sm">{theater.trackedVessels}</span>
+                                        <span className="text-[10px] text-intel-text uppercase tracking-wider">Naval Assets</span>
+                                        <span className="font-mono text-sm font-bold text-intel-text-light">{theater.trackedVessels}</span>
                                     </div>
                                 </div>
                             </div>

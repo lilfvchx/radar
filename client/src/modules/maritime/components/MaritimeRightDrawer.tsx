@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Target, X, Share2, AlertTriangle, Info } from 'lucide-react';
+import { Target, Share2, AlertTriangle, Info } from 'lucide-react';
 import type { VesselState } from '../hooks/useMaritimeSnapshot';
 
 interface MaritimeRightDrawerProps {
@@ -82,17 +82,15 @@ export const MaritimeRightDrawer: React.FC<MaritimeRightDrawerProps> = ({ vessel
     return (
         // CSS-only slide-in — no extra render, no mounted state trick.
         // animate-in + slide-in-from-right are Tailwind v3 animation utilities.
-        <div className="absolute top-10 right-0 bottom-8 w-96 bg-intel-panel/95 backdrop-blur-md border-l border-intel-accent/30 shadow-2xl z-20 flex flex-col font-mono text-sm animate-in slide-in-from-right duration-300">
+        <div className="absolute top-12 right-0 bottom-8 w-96 tech-panel z-20 flex flex-col font-mono text-sm animate-in slide-in-from-right duration-300 !border-y-0 !border-r-0 !border-l-intel-accent/30 shadow-[-15px_0_30px_rgba(0,0,0,0.8)]">
 
             {/* Header */}
-            <div className="flex items-start justify-between p-4 border-b border-white/10 bg-gradient-to-b from-white/5 to-transparent relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-0.5 bg-intel-accent" />
-
+            <div className="flex items-start justify-between p-4 tech-panel-header">
                 <div>
-                    <div className="text-[10px] text-intel-accent mb-1 tracking-widest font-bold">TARGET // MARITIME</div>
-                    <h2 className="text-2xl font-bold text-white tracking-wider flex items-center">
+                    <div className="text-[10px] text-intel-accent mb-1 tracking-[0.2em] font-bold drop-shadow-[0_0_5px_var(--color-intel-accent)]">TARGET // MARITIME</div>
+                    <h2 className="text-2xl font-bold text-intel-text-light tracking-wider flex items-center drop-shadow-[0_0_8px_rgba(224,242,254,0.5)]">
                         {vessel.name.toUpperCase()}
-                        {isMoored && <span className="ml-3 px-1.5 py-0.5 bg-[#f59e0b]/20 text-[#f59e0b] text-[10px] border border-[#f59e0b]/30">MOORED</span>}
+                        {isMoored && <span className="ml-3 px-1.5 py-0.5 bg-[#f59e0b]/20 text-[#f59e0b] text-[10px] border border-[#f59e0b]/30 shadow-[0_0_10px_rgba(245,158,11,0.2)]">MOORED</span>}
                     </h2>
                     <div className="text-intel-text text-xs mt-1 space-x-3 opacity-80">
                         <span>MMSI: {vessel.mmsi}</span>
@@ -101,8 +99,8 @@ export const MaritimeRightDrawer: React.FC<MaritimeRightDrawerProps> = ({ vessel
                     </div>
                 </div>
 
-                <button onClick={onClose} className="p-1.5 text-intel-text hover:text-white hover:bg-white/10 rounded transition-colors">
-                    <X size={20} />
+                <button onClick={onClose} className="text-intel-accent hover:text-intel-text-light hover:drop-shadow-[0_0_8px_var(--color-intel-accent)] transition-all font-mono mt-1">
+                    [X]
                 </button>
             </div>
 

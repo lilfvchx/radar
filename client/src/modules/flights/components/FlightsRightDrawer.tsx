@@ -73,9 +73,9 @@ export const FlightsRightDrawer: React.FC<Props> = ({ flight, onClose }) => {
                             onClick={() => setCameraTrackMode(!cameraTrackMode)}
                             aria-label={cameraTrackMode ? 'Disable camera tracking' : 'Enable camera tracking'}
                             aria-pressed={cameraTrackMode}
-                            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-[4px] border transition-colors text-[11px] font-bold ${cameraTrackMode
-                                ? 'bg-intel-accent/20 border-intel-accent/50 text-intel-accent shadow-[0_0_10px_rgba(26,115,232,0.3)]'
-                                : 'bg-[#151b28] hover:bg-[#1a2233] border-intel-panel text-intel-text-light'
+                            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 border transition-all text-[11px] font-mono font-bold tracking-widest ${cameraTrackMode
+                                ? 'bg-intel-accent/20 border-intel-accent text-intel-accent shadow-[0_0_15px_rgba(0,229,255,0.3)] drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]'
+                                : 'bg-black/60 hover:bg-intel-accent/10 border-white/10 hover:border-intel-accent/50 text-intel-text-light'
                                 }`}
                         >
                             <Crosshair size={13} className={cameraTrackMode ? "animate-pulse" : ""} />
@@ -86,9 +86,9 @@ export const FlightsRightDrawer: React.FC<Props> = ({ flight, onClose }) => {
                             onClick={() => setOnboardMode(!onboardMode)}
                             aria-label={onboardMode ? 'Disable 3D onboard view' : 'Enable 3D onboard view'}
                             aria-pressed={onboardMode}
-                            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-[4px] border transition-colors text-[11px] font-bold ${onboardMode
-                                ? 'bg-intel-accent/20 border-intel-accent/50 text-intel-accent shadow-[0_0_10px_rgba(26,115,232,0.3)]'
-                                : 'bg-[#151b28] hover:bg-[#1a2233] border-intel-panel text-intel-text-light'
+                            className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 border transition-all text-[11px] font-mono font-bold tracking-widest ${onboardMode
+                                ? 'bg-intel-accent/20 border-intel-accent text-intel-accent shadow-[0_0_15px_rgba(0,229,255,0.3)] drop-shadow-[0_0_8px_rgba(0,229,255,0.8)]'
+                                : 'bg-black/60 hover:bg-intel-accent/10 border-white/10 hover:border-intel-accent/50 text-intel-text-light'
                                 }`}
                             title="Experience 3D aircraft models, terrain, and seamlessly jump to nearby live traffic"
                         >

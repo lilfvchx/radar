@@ -29,7 +29,7 @@ export const FlightsToolbar: React.FC<FlightsToolbarProps> = ({
     );
 
     return (
-        <div className="absolute top-0 left-0 right-0 p-2 bg-intel-panel/50 border-b border-intel-panel backdrop-blur-md z-10 flex items-center gap-4 pointer-events-auto flex-wrap">
+        <div className="absolute top-0 left-0 right-0 p-2 tech-panel z-10 flex items-center gap-4 pointer-events-auto flex-wrap !border-t-0 !border-l-0 !border-r-0 shadow-[0_15px_30px_rgba(0,0,0,0.8)]">
 
             {/* ── Global Stats ──────────────────────────────── */}
             <div className="flex items-center gap-3">
@@ -50,7 +50,7 @@ export const FlightsToolbar: React.FC<FlightsToolbarProps> = ({
                     type="text"
                     value={filters.callsign}
                     onChange={e => setFilter('callsign', e.target.value.toUpperCase())}
-                    className="bg-intel-bg border border-intel-panel rounded px-2 py-1 text-xs font-mono text-intel-text-light outline-none focus:border-intel-accent w-24"
+                    className="bg-black/60 border border-white/10 px-2 py-1 text-xs font-mono text-intel-text-light outline-none focus:border-intel-accent focus:shadow-[0_0_10px_rgba(0,229,255,0.3)] transition-all w-24"
                     placeholder="ANY"
                 />
             </div>
@@ -103,8 +103,8 @@ export const FlightsToolbar: React.FC<FlightsToolbarProps> = ({
 };
 
 const StatPill: React.FC<{ label: string; value: number; color: string }> = ({ label, value, color }) => (
-    <div className="flex items-center gap-1.5">
-        <span className="text-[9px] font-bold tracking-widest text-intel-text-light/60">{label}</span>
-        <span className={`text-xs font-mono font-bold tabular-nums ${color}`}>{value.toLocaleString()}</span>
+    <div className="flex items-center gap-1.5 bg-black/40 px-2.5 py-1 border border-white/5 shadow-[inset_0_0_8px_rgba(0,0,0,0.5)]">
+        <span className="text-[9px] font-bold tracking-[0.1em] text-intel-text uppercase">{label}</span>
+        <span className={`text-xs font-mono font-bold tabular-nums drop-shadow-[0_0_5px_currentColor] ${color}`}>{value.toLocaleString()}</span>
     </div>
 );

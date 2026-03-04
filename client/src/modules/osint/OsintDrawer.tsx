@@ -14,27 +14,27 @@ export const OsintDrawer: React.FC = () => {
     if (!osintDrawerOpen) return null;
 
     return (
-        <div className="absolute left-0 top-0 bottom-8 w-96 bg-intel-panel/95 backdrop-blur-md border-r border-intel-accent/30 z-40 flex flex-col shadow-2xl transition-transform transform translate-x-0">
-            <div className="flex items-center justify-between p-4 border-b border-intel-accent/20 bg-intel-accent/10">
-                <div className="flex items-center gap-2 text-intel-text-light font-bold tracking-widest text-sm">
-                    <span className="w-2 h-2 rounded-full bg-intel-accent animate-pulse"></span>
+        <div className="absolute left-0 top-0 bottom-8 w-96 tech-panel z-40 flex flex-col shadow-[15px_0_30px_rgba(0,0,0,0.8)] transition-transform transform translate-x-0 !border-l-0 !border-y-0 !border-r-intel-accent/30">
+            <div className="flex items-center justify-between p-4 tech-panel-header">
+                <div className="flex items-center gap-2 text-intel-text-light font-mono font-bold tracking-widest text-sm drop-shadow-[0_0_8px_rgba(224,242,254,0.5)]">
+                    <span className="w-2 h-2 bg-intel-accent shadow-[0_0_8px_var(--color-intel-accent)] animate-pulse"></span>
                     OSINT & GEOPOLITICAL NEWS
                 </div>
                 <button
                     onClick={() => setOsintDrawerOpen(false)}
-                    className="text-intel-text hover:text-intel-text-light transition-colors"
+                    className="text-intel-accent hover:text-intel-text-light hover:drop-shadow-[0_0_8px_var(--color-intel-accent)] transition-all font-mono"
                 >
-                    ✕
+                    [X]
                 </button>
             </div>
 
             {/* Category Filter Pills */}
-            <div className="px-4 py-2 border-b border-intel-accent/20 bg-intel-bg/50 flex gap-2 overflow-x-auto no-scrollbar">
+            <div className="px-4 py-2 border-b border-intel-accent/20 bg-black/40 flex gap-2 overflow-x-auto no-scrollbar">
                 {(["All", "Business & Economy", "Lifestyle & Culture", "Local News", "Politics & Society", "Science & Technology", "Sports", "World / International"] as const).map(cat => (
                     <button
                         key={cat}
                         onClick={() => setSelectedCategory(cat as any)}
-                        className={`whitespace-nowrap px-3 py-1 text-xs font-bold rounded-full border transition-colors ${selectedCategory === cat ? 'bg-intel-accent text-intel-bg border-intel-accent' : 'bg-transparent text-intel-accent border-intel-accent/40 hover:bg-intel-accent/20'}`}
+                        className={`whitespace-nowrap px-3 py-1 text-[10px] font-mono font-bold border transition-colors ${selectedCategory === cat ? 'bg-intel-accent/20 text-intel-accent border-intel-accent shadow-[inset_0_0_10px_rgba(0,229,255,0.2)]' : 'bg-transparent text-intel-text border-white/10 hover:bg-white/5 hover:text-intel-text-light hover:border-white/30'}`}
                     >
                         {cat}
                     </button>
@@ -90,8 +90,8 @@ export const OsintDrawer: React.FC = () => {
                 )}
 
                 {data?.news?.map((item, idx) => (
-                    <div key={`news-${idx}`} className="border border-intel-accent/20 bg-intel-bg/50 p-3 rounded">
-                        <div className="text-intel-accent/70 text-xs mb-2 flex justify-between">
+                    <div key={`news-${idx}`} className="border border-intel-accent/20 bg-black/40 p-3 hover:border-intel-accent/60 transition-colors shadow-[0_0_15px_rgba(0,229,255,0.02)] hover:shadow-[0_0_15px_rgba(0,229,255,0.1)]">
+                        <div className="text-intel-accent/70 text-[10px] font-bold mb-2 flex justify-between tracking-widest">
                             <span>{item.source}</span>
                             <span>{new Date(item.pubDate).toLocaleDateString()}</span>
                         </div>
@@ -119,7 +119,7 @@ export const OsintDrawer: React.FC = () => {
                         }
                     }}
                     disabled={!data || data.news.length === 0 || intelBrief.isPending}
-                    className="w-full py-2 bg-intel-accent/20 hover:bg-intel-accent/40 text-intel-text-light border border-intel-accent/50 rounded transition-all tracking-widest text-xs font-bold uppercase disabled:opacity-50"
+                    className="w-full py-2 bg-intel-accent/10 hover:bg-intel-accent/30 text-intel-accent border border-intel-accent/50 transition-all tracking-[0.2em] text-[10px] font-mono font-bold uppercase disabled:opacity-30 drop-shadow-[0_0_8px_rgba(0,229,255,0.3)] hover:drop-shadow-[0_0_12px_rgba(0,229,255,0.5)]"
                 >
                     {intelBrief.isPending ? 'PROCESSING...' : 'GENERATE INTEL BRIEF (AI)'}
                 </button>

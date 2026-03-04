@@ -34,12 +34,12 @@ export function ConflictEventsPanel() {
 
     return (
         <div className="flex flex-col h-full space-y-4">
-            <div className="flex items-center justify-between uppercase tracking-widest text-xs font-bold text-gray-400 border-b border-white/10 pb-2">
+            <div className="flex items-center justify-between uppercase tracking-widest text-xs font-bold text-intel-text-light tech-panel-header pb-2">
                 <div className="flex items-center gap-2">
-                    <Flame size={14} className="text-red-400" />
+                    <Flame size={14} className="text-intel-accent drop-shadow-[0_0_8px_var(--color-intel-accent)]" />
                     <span>Recent Conflict Events</span>
                 </div>
-                {isLoading && <span className="text-red-400 animate-pulse">Syncing...</span>}
+                {isLoading && <span className="text-intel-accent animate-pulse text-[10px]">SYNCING...</span>}
             </div>
 
             <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
@@ -64,8 +64,8 @@ export function ConflictEventsPanel() {
                             key={event.id}
                             onClick={() => setCurrentRegion(event.location.latitude, event.location.longitude)}
                             className={clsx(
-                                "flex flex-col p-3 rounded-lg border border-red-500/20 bg-red-500/5",
-                                "cursor-pointer backdrop-blur-sm transition-all duration-300 hover:bg-red-500/10 hover:border-red-500/40"
+                                "flex flex-col p-3 border border-red-500/30 bg-red-500/5 shadow-[inset_0_0_10px_rgba(239,68,68,0.05)]",
+                                "cursor-pointer backdrop-blur-sm transition-all duration-300 hover:bg-red-500/10 hover:border-red-500/60 hover:shadow-[inset_0_0_15px_rgba(239,68,68,0.15)]"
                             )}
                         >
                             <div className="flex justify-between items-start mb-2">

@@ -15,17 +15,17 @@ interface CIIScore {
 }
 
 const getScoreColor = (score: number) => {
-    if (score >= 75) return 'text-red-500 bg-red-500/10 border-red-500/30';
-    if (score >= 50) return 'text-orange-500 bg-orange-500/10 border-orange-500/30';
-    if (score >= 25) return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/30';
-    return 'text-green-500 bg-green-500/10 border-green-500/30';
+    if (score >= 75) return 'text-red-400 bg-red-500/5 border-red-500/40 hover:bg-red-500/10 hover:border-red-500/60 shadow-[inset_0_0_15px_rgba(239,68,68,0.1)]';
+    if (score >= 50) return 'text-orange-400 bg-orange-500/5 border-orange-500/40 hover:bg-orange-500/10 hover:border-orange-500/60 shadow-[inset_0_0_15px_rgba(249,115,22,0.1)]';
+    if (score >= 25) return 'text-yellow-400 bg-yellow-500/5 border-yellow-500/40 hover:bg-yellow-500/10 hover:border-yellow-500/60 shadow-[inset_0_0_15px_rgba(234,179,8,0.1)]';
+    return 'text-intel-success bg-intel-success/5 border-intel-success/40 hover:bg-intel-success/10 hover:border-intel-success/60 shadow-[inset_0_0_15px_rgba(16,185,129,0.1)]';
 };
 
 const getProgressColor = (score: number) => {
     if (score >= 75) return 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]';
     if (score >= 50) return 'bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]';
     if (score >= 25) return 'bg-yellow-500 shadow-[0_0_10px_rgba(234,179,8,0.5)]';
-    return 'bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]';
+    return 'bg-intel-success shadow-[0_0_10px_rgba(16,185,129,0.5)]';
 };
 
 export function CountryInstabilityPanel() {
@@ -42,12 +42,12 @@ export function CountryInstabilityPanel() {
 
     return (
         <div className="flex flex-col h-full space-y-4">
-            <div className="flex items-center justify-between uppercase tracking-widest text-xs font-bold text-gray-400 border-b border-white/10 pb-2">
+            <div className="flex items-center justify-between uppercase tracking-widest text-xs font-bold text-intel-text-light tech-panel-header pb-2">
                 <div className="flex items-center gap-2">
-                    <Activity size={14} className="text-blue-400" />
+                    <Activity size={14} className="text-intel-accent drop-shadow-[0_0_8px_var(--color-intel-accent)]" />
                     <span>Country Instability Index</span>
                 </div>
-                {isLoading && <span className="text-blue-400 animate-pulse">Syncing...</span>}
+                {isLoading && <span className="text-intel-accent animate-pulse text-[10px]">SYNCING...</span>}
             </div>
 
             <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
@@ -65,8 +65,8 @@ export function CountryInstabilityPanel() {
                 ) : (
                     data.map((country) => (
                         <div key={country.region} className={clsx(
-                            "relative overflow-hidden p-3 rounded-lg border",
-                            "backdrop-blur-sm transition-all duration-300 hover:bg-white/5",
+                            "relative overflow-hidden p-3 border",
+                            "backdrop-blur-sm transition-all duration-300",
                             getScoreColor(country.combinedScore)
                         )}>
                             <div className="flex justify-between items-end mb-2 relative z-10">

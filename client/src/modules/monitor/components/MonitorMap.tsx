@@ -128,9 +128,9 @@ export function MonitorMap() {
                     </Source>
                 )}
             </Map>
-            <div className="absolute top-4 left-4 pointer-events-none z-10 bg-black/40 px-3 py-1.5 rounded border border-white/10 backdrop-blur-sm shadow-[0_0_15px_rgba(59,130,246,0.15)]">
-                <div className="flex items-center gap-2 text-xs font-bold tracking-widest text-blue-400">
-                    <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+            <div className="absolute top-4 left-4 pointer-events-none z-10 tech-panel px-4 py-2 drop-shadow-[0_0_15px_rgba(0,229,255,0.2)]">
+                <div className="flex items-center gap-3 text-sm font-mono font-bold tracking-[0.15em] text-intel-text-light">
+                    <span className="w-2 h-2 bg-intel-accent animate-pulse shadow-[0_0_10px_var(--color-intel-accent)]"></span>
                     GLOBAL TACTICAL OVERVIEW
                 </div>
             </div>

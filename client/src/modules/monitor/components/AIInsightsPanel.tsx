@@ -15,12 +15,12 @@ export function AIInsightsPanel() {
 
     return (
         <div className="flex flex-col h-full space-y-4">
-            <div className="flex items-center justify-between uppercase tracking-widest text-xs font-bold text-gray-400 border-b border-white/10 pb-2">
+            <div className="flex items-center justify-between uppercase tracking-widest text-xs font-bold text-intel-text-light tech-panel-header pb-2">
                 <div className="flex items-center gap-2">
-                    <Cpu size={14} className="text-purple-400" />
+                    <Cpu size={14} className="text-purple-400 drop-shadow-[0_0_8px_rgba(192,132,252,0.8)]" />
                     <span>AI Synthesis Engine</span>
                 </div>
-                {isLoading && <span className="text-purple-400 animate-pulse text-[10px]">Processing...</span>}
+                {isLoading && <span className="text-purple-400 animate-pulse text-[10px]">PROCESSING...</span>}
             </div>
 
             <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-2">
@@ -29,10 +29,10 @@ export function AIInsightsPanel() {
                         key={cat}
                         onClick={() => setSelectedCategory(cat as any)}
                         className={clsx(
-                            "whitespace-nowrap px-2 py-1 text-[9px] uppercase font-bold rounded-sm border transition-colors",
+                            "whitespace-nowrap px-2 py-1 text-[9px] uppercase font-bold border transition-colors",
                             selectedCategory === cat
-                                ? 'bg-purple-500/20 text-purple-300 border-purple-500/50'
-                                : 'bg-transparent text-gray-500 border-white/10 hover:bg-white/5 hover:text-gray-300'
+                                ? 'bg-purple-500/20 text-purple-300 border-purple-500/50 shadow-[inset_0_0_8px_rgba(168,85,247,0.2)]'
+                                : 'bg-transparent text-intel-text border-white/10 hover:bg-purple-500/10 hover:border-purple-500/30 hover:text-intel-text-light'
                         )}
                     >
                         {cat}
@@ -48,10 +48,10 @@ export function AIInsightsPanel() {
                 )}
 
                 {/* AI Brief Widget */}
-                <div className="border border-purple-500/30 bg-purple-900/10 relative shadow-[0_0_15px_rgba(168,85,247,0.1)] rounded overflow-hidden">
+                <div className="border border-purple-500/30 bg-purple-900/10 relative shadow-[0_0_15px_rgba(168,85,247,0.1)]">
                     <div className="px-3 py-1.5 bg-purple-500/20 border-b border-purple-500/30 flex justify-between items-center text-[10px] font-bold tracking-widest text-purple-200">
                         <div className="flex items-center gap-2">
-                            <Radio size={12} className={intelBrief.isPending ? "animate-spin" : ""} />
+                            <Radio size={12} className={intelBrief.isPending ? "animate-spin" : "drop-shadow-[0_0_5px_rgba(192,132,252,0.8)]"} />
                             <span>COGNITIVE REPORT</span>
                         </div>
                     </div>
@@ -94,12 +94,12 @@ export function AIInsightsPanel() {
 
                 {/* Standard News Items */}
                 {routeData?.news?.map((item, idx) => (
-                    <div key={`news-${idx}`} className="border flex flex-col gap-1 border-white/5 bg-black/40 p-2.5 rounded hover:border-white/20 transition-colors">
-                        <div className="text-gray-500 text-[9px] flex justify-between uppercase tracking-wider">
+                    <div key={`news-${idx}`} className="border flex flex-col gap-1 border-white/5 bg-black/40 p-2.5 hover:border-purple-500/30 transition-colors hover:shadow-[0_0_10px_rgba(168,85,247,0.1)]">
+                        <div className="text-intel-text text-[9px] flex justify-between uppercase tracking-wider">
                             <span>{item.source}</span>
                             <span>{DATE_FORMATTER.format(new Date(item.pubDate))}</span>
                         </div>
-                        <a href={item.link} target="_blank" rel="noreferrer" className="text-gray-200 text-xs hover:text-purple-400 transition-colors font-semibold block cursor-pointer leading-relaxed">
+                        <a href={item.link} target="_blank" rel="noreferrer" className="text-intel-text-light text-xs hover:text-purple-400 transition-colors font-semibold block cursor-pointer leading-relaxed">
                             {item.title}
                         </a>
                     </div>
