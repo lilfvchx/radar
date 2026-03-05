@@ -135,4 +135,4 @@ None at this time.
 
 ## Known Issues
 
-See [GitHub Issues](https://github.com/Syntax-Error-1337/INTELMAP/issues) for current bugs and limitations.
+See [GitHub Issues](https://github.com/Syntax-Error-1337/radar/issues) for current bugs and limitations.
