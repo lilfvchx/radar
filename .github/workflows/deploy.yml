@@ -1,0 +1,132 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allow manual triggers
+
+jobs:
+  deploy:
+    name: Deploy to Server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Create .env file
+        run: |
+          cat > server/.env <<EOF
+          # Flight Data
+          FLIGHT_DATA_SOURCE=adsblol
+          ADSB_LOL_LAT=0
+          ADSB_LOL_LON=0
+          ADSB_LOL_RADIUS=25000
+
+          # Maritime Data
+          AISSTREAM_API_KEY=${{ secrets.AISSTREAM_API_KEY }}
+
+          # OSINT / LLM
+          OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }}
+
+          # ACLED Conflict Data
+          ACLED_USERNAME=${{ secrets.ACLED_USERNAME }}
+          ACLED_PASSWORD=${{ secrets.ACLED_PASSWORD }}
+
+          # Cloudflare Radar
+          CLOUDFLARE_RADAR_TOKEN=${{ secrets.CLOUDFLARE_RADAR_TOKEN }}
+          EOF
+
+      - name: Deploy to server
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'ENDSSH'
+            set -e
+
+            echo "=== Starting deployment ==="
+
+            # Navigate to app directory
+            cd /opt/radar
+
+            # Pull latest code
+            echo "Pulling latest code..."
+            if [ -d ".git" ]; then
+              git fetch origin
+              git reset --hard origin/main
+            else
+              git clone https://github.com/Syntax-Error-1337/radar.git .
+            fi
+
+            # Stop existing containers
+            echo "Stopping containers..."
+            docker-compose down || true
+
+            # Remove old images to free space
+            docker image prune -f
+
+            # Build and start
+            echo "Building and starting containers..."
+            docker-compose up -d --build
+
+            # Wait for health check
+            echo "Waiting for application to start..."
+            sleep 10
+
+            # Check status
+            docker-compose ps
+
+            echo "=== Deployment complete ==="
+          ENDSSH
+
+      - name: Upload .env to server
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          scp -o StrictHostKeyChecking=no server/.env $SERVER_USER@$SERVER_IP:/opt/radar/server/.env
+
+      - name: Verify deployment
+        env:
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+        run: |
+          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'ENDSSH'
+            # Check if container is running
+            if docker ps | grep -q radar; then
+              echo "✅ Container is running"
+
+              # Test health endpoint
+              sleep 5
+              if curl -f http://localhost:3001/health > /dev/null 2>&1; then
+                echo "✅ Health check passed"
+              else
+                echo "⚠️  Health check failed"
+                docker logs radar --tail=50
+                exit 1
+              fi
+            else
+              echo "❌ Container failed to start"
+              docker logs radar --tail=50
+              exit 1
+            fi
+          ENDSSH
+
+      - name: Notify deployment status
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "🚀 Deployment successful!"
+            echo "Application URL: http://${{ secrets.SERVER_IP }}:3001"
+          else
+            echo "❌ Deployment failed!"
+          fi
