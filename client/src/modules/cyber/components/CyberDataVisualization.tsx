@@ -3,6 +3,76 @@ import { useCyberStore } from '../cyber.store';
 import { useDynamicCyberData } from '../hooks/useCyberData';
 import { getEndpointDef, getCategoryForEndpoint } from '../config';
 
+// ─── Type Definitions ─────────────────────────────────────────────────────────
+interface RankedCountryRow {
+    clientCountryName?: string;
+    originCountryName?: string;
+    location?: string;
+    clientCountryAlpha2?: string;
+    originCountryAlpha2?: string;
+    value?: string;
+    rank?: number;
+}
+
+interface RankedAsnRow {
+    asn?: string;
+    originAsn?: string;
+    ASName?: string;
+    originAsnName?: string;
+    value?: string;
+    rank?: number;
+}
+
+interface DomainCategory {
+    name: string;
+}
+
+interface RankedDomainRow {
+    rank: number;
+    domain: string;
+    categories?: DomainCategory[];
+}
+
+interface SpeedTableRow {
+    clientCountryAlpha2: string;
+    clientCountryName: string;
+    bandwidthDownload: string;
+    bandwidthUpload: string;
+    latencyIdle: string;
+    jitterIdle: string;
+}
+
+interface BgpStats {
+    routes_total: number;
+    routes_valid: number;
+    routes_invalid: number;
+    routes_unknown: number;
+    distinct_prefixes: number;
+    distinct_prefixes_ipv4: number;
+    distinct_prefixes_ipv6: number;
+    distinct_origins: number;
+    distinct_origins_ipv4: number;
+    distinct_origins_ipv6: number;
+}
+
+interface AnomalyRow {
+    type: string;
+    locationDetails?: {
+        name: string;
+        code: string;
+    };
+    asnDetails?: {
+        name: string;
+        location?: {
+            code: string;
+        };
+    };
+    status: string;
+    startDate: string;
+    endDate?: string;
+    visibleInDataSources?: string[];
+}
+
 // ─── Flag emoji from ISO alpha-2 ─────────────────────────────────────────────
 const flagEmoji = (alpha2: string) =>
     alpha2
@@ -22,7 +92,7 @@ const Bar: React.FC<{ pct: number; max?: number; color: string }> = ({ pct, max 
 );
 
 // ─── Ranked Country ───────────────────────────────────────────────────────────
-const RankedCountryRenderer: React.FC<{ rows: any[]; color: string; unit?: string }> = ({ rows, color, unit }) => {
+const RankedCountryRenderer: React.FC<{ rows: RankedCountryRow[]; color: string; unit?: string }> = ({ rows, color, unit }) => {
     const max = rows.length > 0 ? parseFloat(rows[0].value ?? '0') : 100;
     return (
         <div className="flex flex-col gap-1">
@@ -47,7 +117,7 @@ const RankedCountryRenderer: React.FC<{ rows: any[]; color: string; unit?: strin
 };
 
 // ─── Ranked ASN ───────────────────────────────────────────────────────────────
-const RankedAsnRenderer: React.FC<{ rows: any[]; color: string; unit?: string }> = ({ rows, color, unit }) => {
+const RankedAsnRenderer: React.FC<{ rows: RankedAsnRow[]; color: string; unit?: string }> = ({ rows, color, unit }) => {
     const max = rows.length > 0 ? parseFloat(rows[0].value ?? '0') : 100;
     return (
         <div className="flex flex-col gap-1">
@@ -74,10 +144,10 @@ const RankedAsnRenderer: React.FC<{ rows: any[]; color: string; unit?: string }>
 };
 
 // ─── Ranked Domain ────────────────────────────────────────────────────────────
-const RankedDomainRenderer: React.FC<{ rows: any[]; color: string }> = ({ rows, color }) => (
+const RankedDomainRenderer: React.FC<{ rows: RankedDomainRow[]; color: string }> = ({ rows, color }) => (
     <div className="flex flex-col gap-1">
         {rows.map((row, i) => {
-            const cats = (row.categories ?? []).map((c: any) => c.name).join(' · ');
+            const cats = (row.categories ?? []).map((c: DomainCategory) => c.name).join(' · ');
             return (
                 <div key={i} className="flex items-center gap-3 bg-intel-bg/40 border border-white/5 px-3 py-1.5 rounded hover:bg-white/5 transition-colors">
                     <span className="font-mono text-xs font-bold w-10 text-right tabular-nums shrink-0" style={{ color }}>#{row.rank}</span>
@@ -90,7 +160,7 @@ const RankedDomainRenderer: React.FC<{ rows: any[]; color: string }> = ({ rows, 
 );
 
 // ─── Speed Table ──────────────────────────────────────────────────────────────
-const SpeedTableRenderer: React.FC<{ rows: any[]; color: string }> = ({ rows, color }) => (
+const SpeedTableRenderer: React.FC<{ rows: SpeedTableRow[]; color: string }> = ({ rows, color }) => (
     <div>
         <div className="grid grid-cols-6 gap-2 px-3 py-1 mb-1">
             {['#', 'Country', 'Download', 'Upload', 'Latency', 'Jitter'].map(h => (
@@ -123,7 +193,7 @@ const SpeedTableRenderer: React.FC<{ rows: any[]; color: string }> = ({ rows, co
 );
 
 // ─── BGP Global Stats ─────────────────────────────────────────────────────────
-const BgpStatsRenderer: React.FC<{ stats: any; color: string }> = ({ stats, color }) => {
+const BgpStatsRenderer: React.FC<{ stats: BgpStats; color: string }> = ({ stats, color }) => {
     const groups = [
         {
             label: 'Routes',
@@ -177,8 +247,12 @@ const BgpStatsRenderer: React.FC<{ stats: any; color: string }> = ({ stats, colo
 };
 
 // ─── Anomaly Feed ─────────────────────────────────────────────────────────────
-const AnomalyFeedRenderer: React.FC<{ rows: any[] }> = ({ rows }) => {
+const AnomalyFeedRenderer: React.FC<{ rows: AnomalyRow[] }> = ({ rows }) => {
     const statusColor = (s: string) => s === 'VERIFIED' ? '#ef4444' : '#f59e0b';
+    // Compute current time for elapsed time display. This is intentionally called during render
+    // to show accurate elapsed times. The component re-renders when rows change, updating times.
+    // eslint-disable-next-line react-hooks/purity
+    const now = Date.now();
     return (
         <div className="flex flex-col gap-2">
             {rows.map((a, i) => {
@@ -186,7 +260,7 @@ const AnomalyFeedRenderer: React.FC<{ rows: any[] }> = ({ rows }) => {
                 const name = isLocation ? a.locationDetails?.name : a.asnDetails?.name;
                 const code = isLocation ? a.locationDetails?.code : a.asnDetails?.location?.code;
                 const sc = statusColor(a.status);
-                const elapsed = Date.now() - new Date(a.startDate).getTime();
+                const elapsed = now - new Date(a.startDate).getTime();
                 const hours = Math.floor(elapsed / 3_600_000);
                 const minutes = Math.floor((elapsed % 3_600_000) / 60_000);
                 const duration = hours > 0 ? `${hours}h ${minutes}m ago` : `${minutes}m ago`;

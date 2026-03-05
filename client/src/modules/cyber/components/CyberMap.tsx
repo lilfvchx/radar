@@ -1,12 +1,36 @@
 import { useRef, useEffect, useMemo, useState, useCallback } from 'react';
 import Map, { NavigationControl, Source, Layer, Popup } from 'react-map-gl/maplibre';
 import type { MapRef, MapMouseEvent } from 'react-map-gl/maplibre';
+import type { ProjectionSpecification } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useThemeStore } from '../../../ui/theme/theme.store';
 import { SATELLITE_STYLE, DARK_STYLE } from '../../../lib/mapStyles';
 import { useDynamicCyberData } from '../hooks/useCyberData';
 import { useCyberStore } from '../cyber.store';
 import { getCategoryDef } from '../config';
+
+// ─── Type Definitions ─────────────────────────────────────────────────────────
+interface CyberDataRow {
+    clientCountryAlpha2?: string;
+    originCountryAlpha2?: string;
+    clientCountryName?: string;
+    originCountryName?: string;
+    value?: string;
+    rank?: number;
+    asn?: string;
+    originAsn?: string;
+    ASName?: string;
+    originAsnName?: string;
+}
+
+interface FeatureProperties {
+    code: string;
+    name: string;
+    value: number;
+    rank: number | null;
+    radiusPx: number;
+    [key: string]: string | number | null | undefined;
+}
 
 // ─── Country centroid LUT ─────────────────────────────────────────────────────
 const COUNTRY_CENTROIDS: Record<string, [number, number]> = {
@@ -55,7 +79,7 @@ const OVERLAY_ENDPOINTS: Record<string, string> = {
 interface PopupData {
     longitude: number;
     latitude: number;
-    props: Record<string, any>;
+    props: FeatureProperties;
 }
 
 export function CyberMap() {
@@ -72,16 +96,16 @@ export function CyberMap() {
 
     // ─── Build GeoJSON from response rows ─────────────────────────────────────
     const geojson = useMemo(() => {
-        const rows: any[] = overlayData?.top_0 ?? [];
+        const rows: CyberDataRow[] = overlayData?.top_0 ?? [];
         if (rows.length === 0) return { type: 'FeatureCollection', features: [] };
 
         // Compute dynamic radius: sqrt scaling so top country ≈ 40px, tail ≈ 5px
-        const maxVal = Math.max(...rows.map((r: any) => parseFloat(r.value ?? '0')));
+        const maxVal = Math.max(...rows.map((r: CyberDataRow) => parseFloat(r.value ?? '0')));
         const MIN_R = 5;
         const MAX_R = 42;
 
         const features = rows
-            .map((row: any) => {
+            .map((row: CyberDataRow) => {
                 const code = row.clientCountryAlpha2 ?? row.originCountryAlpha2;
                 const coords = COUNTRY_CENTROIDS[code];
                 if (!coords) return null;
@@ -124,8 +148,8 @@ export function CyberMap() {
 
         if (features.length > 0) {
             const feat = features[0];
-            const coords = (feat.geometry as any).coordinates;
-            const props = feat.properties ?? {};
+            const coords = (feat.geometry as GeoJSON.Point).coordinates;
+            const props = feat.properties as FeatureProperties;
             setPopup({
                 longitude: coords[0],
                 latitude: coords[1],
@@ -154,7 +178,7 @@ export function CyberMap() {
                 mapStyle={activeMapStyle}
                 styleDiffing={false}
                 cursor="crosshair"
-                projection={mapProjection === 'globe' ? { type: 'globe' } as any : { type: 'mercator' } as any}
+                projection={mapProjection === 'globe' ? { type: 'globe' } as ProjectionSpecification : { type: 'mercator' } as ProjectionSpecification}
                 doubleClickZoom={mapProjection !== 'globe'}
                 style={{ width: '100%', height: '100%' }}
                 onClick={onClick}
@@ -166,7 +190,7 @@ export function CyberMap() {
 
                 {/* ── GeoJSON bubble layers ── */}
                 {geojson.features.length > 0 && (
-                    <Source id="cyber-overlay" type="geojson" data={geojson as any}>
+                    <Source id="cyber-overlay" type="geojson" data={geojson as GeoJSON.FeatureCollection}>
                         {/* Deep soft glow — 2.4x the bubble radius */}
                         <Layer
                             id="cyber-glow"
@@ -262,7 +286,7 @@ export function CyberMap() {
 }
 
 // ─── Inline popup card — no extra file needed ─────────────────────────────────
-function PopupCard({ props, color, category, onClose }: { props: Record<string, any>; color: string; category: string; onClose: () => void }) {
+function PopupCard({ props, color, category, onClose }: { props: FeatureProperties; color: string; category: string; onClose: () => void }) {
     const code = props.code ?? props.clientCountryAlpha2 ?? props.originCountryAlpha2 ?? '';
     const name = props.name ?? props.clientCountryName ?? props.originCountryName ?? 'Unknown';
     const value = parseFloat(props.value ?? '0');

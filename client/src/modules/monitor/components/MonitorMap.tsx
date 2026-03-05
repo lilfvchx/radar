@@ -4,9 +4,25 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import type { MapRef } from 'react-map-gl/maplibre';
+import type { ProjectionSpecification } from 'maplibre-gl';
 import { useThemeStore } from '../../../ui/theme/theme.store';
 import { SATELLITE_STYLE, DARK_STYLE } from '../../../lib/mapStyles';
 import { useOsintStore } from '../../osint/osint.store';
+
+// ─── Type Definitions ─────────────────────────────────────────────────────────
+interface ACLEDEvent {
+    id: string;
+    eventType: string;
+    fatalities: number;
+    location: {
+        latitude: number;
+        longitude: number;
+    };
+}
+
+interface ACLEDResponse {
+    events: ACLEDEvent[];
+}
 
 const INITIAL_VIEW_STATE = {
     longitude: 0,
@@ -21,10 +37,10 @@ export function MonitorMap() {
 
     const { data: events } = useQuery({
         queryKey: ['monitor', 'acled', 'map'],
-        queryFn: async () => {
+        queryFn: async (): Promise<ACLEDEvent[]> => {
             const res = await fetch('/api/monitor/acled?limit=1000');
             if (!res.ok) throw new Error('Network response was not ok');
-            const data = await res.json();
+            const data: ACLEDResponse = await res.json();
             return data.events;
         },
         refetchInterval: 60000, // 60s
@@ -34,7 +50,7 @@ export function MonitorMap() {
         if (!events) return null;
         return {
             type: 'FeatureCollection',
-            features: events.map((e: any) => ({
+            features: events.map((e: ACLEDEvent) => ({
                 type: 'Feature',
                 geometry: {
                     type: 'Point',
@@ -75,7 +91,7 @@ export function MonitorMap() {
                 styleDiffing={false}
                 onClick={onClick}
                 cursor="crosshair"
-                projection={mapProjection === 'globe' ? { type: 'globe' } as import('maplibre-gl').ProjectionSpecification : { type: 'mercator' } as import('maplibre-gl').ProjectionSpecification}
+                projection={mapProjection === 'globe' ? { type: 'globe' } as ProjectionSpecification : { type: 'mercator' } as ProjectionSpecification}
                 doubleClickZoom={mapProjection !== 'globe'}
                 style={{ width: '100%', height: '100%' }}
             >
@@ -86,7 +102,7 @@ export function MonitorMap() {
                 />
 
                 {acledGeoJSON && (
-                    <Source id="acled-events" type="geojson" data={acledGeoJSON as any}>
+                    <Source id="acled-events" type="geojson" data={acledGeoJSON as GeoJSON.FeatureCollection}>
                         <Layer
                             id="acled-heatmap"
                             type="heatmap"

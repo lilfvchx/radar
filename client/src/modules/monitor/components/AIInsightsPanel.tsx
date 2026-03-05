@@ -27,7 +27,7 @@ export function AIInsightsPanel() {
                 {CATEGORIES.map(cat => (
                     <button
                         key={cat}
-                        onClick={() => setSelectedCategory(cat as any)}
+                        onClick={() => setSelectedCategory(cat)}
                         className={clsx(
                             "whitespace-nowrap px-2 py-1 text-[9px] uppercase font-bold border transition-colors",
                             selectedCategory === cat

@@ -33,7 +33,7 @@ export const OsintDrawer: React.FC = () => {
                 {(["All", "Business & Economy", "Lifestyle & Culture", "Local News", "Politics & Society", "Science & Technology", "Sports", "World / International"] as const).map(cat => (
                     <button
                         key={cat}
-                        onClick={() => setSelectedCategory(cat as any)}
+                        onClick={() => setSelectedCategory(cat)}
                         className={`whitespace-nowrap px-3 py-1 text-[10px] font-mono font-bold border transition-colors ${selectedCategory === cat ? 'bg-intel-accent/20 text-intel-accent border-intel-accent shadow-[inset_0_0_10px_rgba(0,229,255,0.2)]' : 'bg-transparent text-intel-text border-white/10 hover:bg-white/5 hover:text-intel-text-light hover:border-white/30'}`}
                     >
                         {cat}
