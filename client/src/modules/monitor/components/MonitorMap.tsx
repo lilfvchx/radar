@@ -7,8 +7,9 @@ import { useThemeStore } from '../../../ui/theme/theme.store';
 import { SATELLITE_STYLE, DARK_STYLE } from '../../../lib/mapStyles';
 import { useOsintStore } from '../../osint/osint.store';
 import { GPSJammingLayer } from './GPSJammingLayer';
-import { RocketAlertLayer, ROCKET_ALERT_LAYER_IDS } from './RocketAlertLayer';
-import { GulfWatchLayer, GULF_WATCH_LAYER_IDS } from './GulfWatchLayer';
+import { RocketAlertLayer } from './RocketAlertLayer';
+import { GulfWatchLayer } from './GulfWatchLayer';
+import { ROCKET_ALERT_LAYER_IDS, GULF_WATCH_LAYER_IDS } from './layerIds';
 import { useGPSJammingStore } from '../gpsJamming.store';
 
 const ALL_INTERACTIVE_LAYERS = [...ROCKET_ALERT_LAYER_IDS, ...GULF_WATCH_LAYER_IDS];

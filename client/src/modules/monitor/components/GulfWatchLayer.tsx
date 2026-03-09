@@ -2,14 +2,6 @@ import { useMemo } from 'react';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import { useGulfWatchAlerts, useEmiratesGeoJSON } from '../hooks/useGulfWatchAlerts';
 
-/** Layer IDs exposed so MonitorMap can set interactiveLayerIds */
-export const GULF_WATCH_LAYER_IDS = [
-  'gulf-watch-fill',
-  'gulf-watch-outline',
-  'gulf-watch-marker-halo',
-  'gulf-watch-marker-dot',
-];
-
 /** Approximate geographic centroids for each UAE emirate */
 const EMIRATE_CENTROIDS: Record<string, [number, number]> = {
   'abu-dhabi': [54.3773, 24.4539],

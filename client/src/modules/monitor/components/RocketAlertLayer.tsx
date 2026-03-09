@@ -2,9 +2,6 @@ import { useMemo } from 'react';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import { useRocketAlerts } from '../hooks/useRocketAlerts';
 
-/** Layer IDs exposed so MonitorMap can set interactiveLayerIds */
-export const ROCKET_ALERT_LAYER_IDS = ['rocket-alerts-halo', 'rocket-alerts-dot'];
-
 /**
  * Renders live rocket/UAV alert positions as red circle markers on the map.
  * Only items with non-null lat/lon coordinates are rendered.
