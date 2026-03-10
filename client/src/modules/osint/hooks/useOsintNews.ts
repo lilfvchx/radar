@@ -29,6 +29,7 @@ export function useOsintNews(lat: number, lon: number, category: string, enabled
       return (await res.json()) as OsintResponse;
     },
     enabled: enabled,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000, // refresh every 5 minutes
   });
 }
