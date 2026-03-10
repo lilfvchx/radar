@@ -1,4 +1,4 @@
-# INTELMAP — Geospatial Intelligence Platform
+# RADAR — Geospatial Intelligence Platform
 
 <div align="center">
 
@@ -19,7 +19,7 @@
 
 ## Overview
 
-**INTELMAP** is a full-stack geospatial intelligence dashboard that aggregates real-time data from multiple sources to provide comprehensive situational awareness across six intelligence domains:
+**RADAR** is a full-stack geospatial intelligence dashboard that aggregates real-time data from multiple sources to provide comprehensive situational awareness across six intelligence domains:
 
 - **✈️ Flight Tracking** — Live aircraft positions via ADS-B data
 - **🚢 Maritime Tracking** — Global vessel tracking via AIS streams
@@ -514,8 +514,8 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/Syntax-Error-1337/INTELMAP/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/Syntax-Error-1337/INTELMAP/discussions)
+- **Issues**: [GitHub Issues](https://github.com/Syntax-Error-1337/radar/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/Syntax-Error-1337/radar/discussions)
 
 ---
 

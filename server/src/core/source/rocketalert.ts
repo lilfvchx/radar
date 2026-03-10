@@ -57,7 +57,7 @@ async function apiFetch<T>(url: string): Promise<T> {
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
     const res = await fetch(url, {
-      headers: { Accept: 'application/json', 'User-Agent': 'IntelMap/1.0' },
+      headers: { Accept: 'application/json', 'User-Agent': 'Radar/1.0' },
       signal: controller.signal,
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
