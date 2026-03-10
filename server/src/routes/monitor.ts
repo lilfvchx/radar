@@ -190,6 +190,10 @@ router.get('/rocket-alerts/history', async (req, res) => {
     const days = await rocketalert.fetchRecentAlertDetails(hours, alertTypeId);
     res.json({ days });
   } catch (error: any) {
+    // API returns { success: false } when there are no alerts in the queried window (peacetime)
+    if (error.message === 'Unknown API error') {
+      return res.json({ days: [] });
+    }
     console.error('[API] Rocket alerts history error:', error);
     res.status(500).json({ error: 'Failed to fetch rocket alert history', message: error.message });
   }

@@ -183,11 +183,13 @@ router.get('/news', async (req: Request, res: Response) => {
           feedsToFetch.push(...urls),
         );
       } else {
-        // Hardcoded ultimate fallback
+        // Hardcoded ultimate fallback — reliable feeds that don't block scrapers
         feedsToFetch = [
-          'https://www.reuters.com/rssFeed/worldNews',
-          'https://apnews.com/hub/ap-top-news?rss=1',
           'https://feeds.bbci.co.uk/news/world/rss.xml',
+          'https://rss.dw.com/rdf/rss-en-world',
+          'https://www.aljazeera.com/xml/rss/all.xml',
+          'https://www.france24.com/en/rss',
+          'https://feeds.npr.org/1004/rss.xml',
         ];
       }
     }
