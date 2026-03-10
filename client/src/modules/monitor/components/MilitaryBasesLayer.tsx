@@ -4,8 +4,6 @@ import type { ExpressionSpecification } from 'maplibre-gl';
 import { useMilitaryBases } from '../hooks/useMilitaryBases';
 import { useMilitaryBasesStore } from '../militaryBases.store';
 
-export const MILITARY_BASES_LAYER_IDS = ['military-bases-halo', 'military-bases-dot'];
-
 // MapLibre expression — color by category
 const CATEGORY_COLOR: ExpressionSpecification = [
   'match',
