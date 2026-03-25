@@ -58,7 +58,7 @@ const createColoredAirplane = (color: string) => {
 
 const ICON_URLS = {
   'aircraft-white': createColoredAirplane('#ffffff'),
-  'aircraft-green': createColoredAirplane('#10b981'),
+  'aircraft-green': createColoredAirplane('#C9A435'), // Rebranded: 'green' name is kept for compatibility but visually it is gold
   'aircraft-orange': createColoredAirplane('#f59e0b'),
 };
 
@@ -455,7 +455,7 @@ export const FlightsPage: React.FC = () => {
                   id="aircraft-tracks"
                   type="line"
                   paint={{
-                    'line-color': '#3b82f6',
+                  'line-color': '#6DB8E8',
                     'line-width': 1,
                     'line-opacity': [
                       'case',
@@ -511,7 +511,7 @@ export const FlightsPage: React.FC = () => {
                         2,
                         0,
                       ],
-                      'circle-stroke-color': '#3b82f6',
+                      'circle-stroke-color': '#6DB8E8',
                     }}
                   />
                 </Source>

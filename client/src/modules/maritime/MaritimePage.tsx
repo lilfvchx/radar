@@ -236,7 +236,7 @@ export const MaritimePage: React.FC = () => {
                     id="vessel-history-line"
                     type="line"
                     paint={{
-                      'line-color': '#10b981',
+                    'line-color': '#2A7EC0',
                       'line-width': 2,
                       'line-opacity': 0.6,
                       'line-dasharray': [2, 2],
@@ -259,7 +259,7 @@ export const MaritimePage: React.FC = () => {
                       2,
                       0,
                     ],
-                    'circle-stroke-color': '#3b82f6',
+                      'circle-stroke-color': '#2A7EC0',
                   }}
                 />
               </Source>
@@ -298,7 +298,7 @@ export const MaritimePage: React.FC = () => {
             <span className="text-white font-semibold">AISSTREAM</span>
           </span>
           <span
-            className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isError ? 'bg-red-500/20 text-red-400' : 'bg-[#10b981]/20 text-[#10b981]'}`}
+            className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isError ? 'bg-red-500/20 text-red-400' : 'bg-intel-success/20 text-intel-success'}`}
           >
             {isError ? 'CONNECTION_ERROR' : 'SECURE_ACTIVE'}
           </span>
