@@ -170,7 +170,7 @@ export async function getCrimeEvents(): Promise<CrimeEvent[]> {
     ORDER BY created_at DESC
   `);
 
-  return res.rows.map(row => ({
+  return res.rows.map((row) => ({
     ...row,
     source_ids: row.source_ids || [],
     labels: row.labels || [],
@@ -178,7 +178,7 @@ export async function getCrimeEvents(): Promise<CrimeEvent[]> {
     updated_at: row.updated_at.toISOString(),
     event_time: row.event_time ? row.event_time.toISOString() : undefined,
     severity_score: Number(row.severity_score),
-    confidence_score: Number(row.confidence_score)
+    confidence_score: Number(row.confidence_score),
   }));
 }
 
@@ -195,7 +195,7 @@ export async function getCrimeEvent(id: string): Promise<CrimeEvent | undefined>
     updated_at: row.updated_at.toISOString(),
     event_time: row.event_time ? row.event_time.toISOString() : undefined,
     severity_score: Number(row.severity_score),
-    confidence_score: Number(row.confidence_score)
+    confidence_score: Number(row.confidence_score),
   };
 }
 
@@ -205,7 +205,7 @@ export async function getSourceItems(): Promise<SourceItem[]> {
     ORDER BY fetched_at DESC
   `);
 
-  return res.rows.map(row => ({
+  return res.rows.map((row) => ({
     ...row,
     published_at: row.published_at ? row.published_at.toISOString() : undefined,
     fetched_at: row.fetched_at.toISOString(),

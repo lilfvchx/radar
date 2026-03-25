@@ -4,17 +4,18 @@ import { normalizeWithGeoRef } from '../enrich/georef';
 global.fetch = jest.fn(() =>
   Promise.resolve({
     ok: true,
-    json: () => Promise.resolve({
-      localidades: [
-        {
-          centroide: { lat: -34.6037, lon: -58.3816 },
-          provincia: { nombre: 'CABA' },
-          municipio: { nombre: 'Comuna 1' },
-          nombre: 'Monserrat'
-        }
-      ]
-    })
-  })
+    json: () =>
+      Promise.resolve({
+        localidades: [
+          {
+            centroide: { lat: -34.6037, lon: -58.3816 },
+            provincia: { nombre: 'CABA' },
+            municipio: { nombre: 'Comuna 1' },
+            nombre: 'Monserrat',
+          },
+        ],
+      }),
+  }),
 ) as jest.Mock;
 
 describe('georef', () => {
@@ -33,7 +34,7 @@ describe('georef', () => {
   it('returns low confidence when fetch fails or returns no results', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
-      json: () => Promise.resolve({ localidades: [] })
+      json: () => Promise.resolve({ localidades: [] }),
     });
 
     const geo = await normalizeWithGeoRef('Nowhereville');
