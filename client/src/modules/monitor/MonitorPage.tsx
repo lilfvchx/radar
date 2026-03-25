@@ -8,6 +8,9 @@ import { useOsintNews } from '../osint/hooks/useOsintNews';
 import { useIntelBrief } from '../osint/hooks/useIntelBrief';
 import { BrainCircuit, Sparkles, Rss, GripHorizontal } from 'lucide-react';
 import clsx from 'clsx';
+import { useCrimeEvents } from '../ar_crime/hooks/useCrimeEvents';
+import { CrimeFilters } from '../ar_crime/components/CrimeFilters';
+import { CrimeEventDrawer } from '../ar_crime/components/CrimeEventDrawer';
 
 const CATEGORIES = [
   'All',
@@ -76,6 +79,10 @@ export const MonitorPage: React.FC = () => {
   } = useOsintNews(currentRegionLat, currentRegionLon, selectedCategory, true);
   const intelBrief = useIntelBrief();
   const totalSignals = (routeData?.news.length ?? 0) + (routeData?.intercepts?.length ?? 0);
+  const [minCrimeSeverity, setMinCrimeSeverity] = useState(40);
+  const [selectedCrimeId, setSelectedCrimeId] = useState<string | null>(null);
+  const crime = useCrimeEvents({ bbox: [-75, -56, -53, -21], minSeverity: minCrimeSeverity });
+  const selectedCrime = crime.data.find((item) => item.event_id === selectedCrimeId) ?? null;
 
   // ── Drag resize ────────────────────────────────────────────────────
   const applyY = useCallback((clientY: number) => {
@@ -179,6 +186,38 @@ export const MonitorPage: React.FC = () => {
           {/* ══ Gulf Watch (UAE + GCC) ══ */}
           <div className="flex-1 min-w-0 flex flex-col overflow-hidden rounded-sm border border-white/8 bg-black/50 p-3 hover:border-orange-500/25 transition-colors">
             <GulfWatchCombinedWidget />
+          </div>
+
+          {/* ══ Argentina Crime OSINT ══ */}
+          <div className="flex-1 min-w-0 flex flex-col overflow-hidden rounded-sm border border-red-500/20 bg-black/50 p-3 hover:border-red-500/35 transition-colors">
+            <div className="flex items-center justify-between pb-2 border-b border-white/8">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-red-300">
+                AR Crime Fusion
+              </span>
+              <span className="text-[9px] text-white/40">
+                {crime.loading ? 'Cargando…' : `${crime.data.length} eventos`}
+              </span>
+            </div>
+            <div className="py-2">
+              <CrimeFilters minSeverity={minCrimeSeverity} setMinSeverity={setMinCrimeSeverity} />
+            </div>
+            <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+              {crime.data.slice(0, 8).map((event) => (
+                <button
+                  key={event.event_id}
+                  onClick={() => setSelectedCrimeId(event.event_id)}
+                  className="w-full text-left border border-white/10 hover:border-red-500/40 bg-red-950/10 px-2 py-1.5"
+                >
+                  <p className="text-[10px] text-white/90 leading-snug line-clamp-2">
+                    {event.summary}
+                  </p>
+                  <p className="text-[9px] text-white/50 mt-1 uppercase">
+                    {event.event_type} · sev {event.severity_score}
+                  </p>
+                </button>
+              ))}
+              {crime.error && <p className="text-[10px] text-red-300/80">{crime.error}</p>}
+            </div>
           </div>
 
           {/* ══ AI Synthesis ══ */}
@@ -392,6 +431,7 @@ export const MonitorPage: React.FC = () => {
 
       {/* Scanlines */}
       <div className="absolute inset-0 pointer-events-none bg-[url('/scanlines.png')] opacity-[0.04] mix-blend-overlay z-50" />
+      <CrimeEventDrawer event={selectedCrime} onClose={() => setSelectedCrimeId(null)} />
     </div>
   );
 };
