@@ -26,7 +26,7 @@ function sourceReliability(sourceName: string): number {
 }
 
 export async function runArCrimeIngest() {
-  const run = createIngestRun();
+  const run = await createIngestRun();
 
   try {
     const allSourceItems: SourceItem[] = [];
@@ -100,10 +100,10 @@ export async function runArCrimeIngest() {
       }
     }
 
-    appendSourceItems(allSourceItems);
-    upsertCrimeEvents(allEvents);
+    await appendSourceItems(allSourceItems);
+    await upsertCrimeEvents(allEvents);
 
-    finalizeIngestRun(run.ingest_run_id, {
+    await finalizeIngestRun(run.ingest_run_id, {
       status: 'ok',
       source_count: allSourceItems.length,
       event_count: allEvents.length,
@@ -115,7 +115,7 @@ export async function runArCrimeIngest() {
       runId: run.ingest_run_id,
     };
   } catch (error: any) {
-    finalizeIngestRun(run.ingest_run_id, {
+    await finalizeIngestRun(run.ingest_run_id, {
       status: 'error',
       errors: [String(error?.message ?? error)],
     });

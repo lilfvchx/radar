@@ -5,7 +5,7 @@ import { getEnabledSources } from '../core/source/ar_crime/sources';
 
 const router = Router();
 
-router.get('/events', (req, res) => {
+router.get('/events', async (req, res) => {
   const bboxParam = String(req.query.bbox ?? '');
   const minSeverity = Number(req.query.minSeverity ?? 0);
   const minConfidence = Number(req.query.minConfidence ?? 0);
@@ -14,7 +14,7 @@ router.get('/events', (req, res) => {
     .map((v) => v.trim())
     .filter(Boolean);
 
-  let events = getCrimeEvents();
+  let events = await getCrimeEvents();
 
   if (bboxParam) {
     const [west, south, east, north] = bboxParam.split(',').map(Number);
@@ -41,14 +41,14 @@ router.get('/events', (req, res) => {
   res.json({ events });
 });
 
-router.get('/event/:id', (req, res) => {
-  const item = getCrimeEvent(req.params.id);
+router.get('/event/:id', async (req, res) => {
+  const item = await getCrimeEvent(req.params.id);
   if (!item) return res.status(404).json({ error: 'Event not found' });
   return res.json(item);
 });
 
-router.get('/sources', (_req, res) => {
-  res.json({ sources: getSourceItems(), policy: getEnabledSources() });
+router.get('/sources', async (_req, res) => {
+  res.json({ sources: await getSourceItems(), policy: getEnabledSources() });
 });
 
 router.post('/ingest/run', async (_req, res) => {
