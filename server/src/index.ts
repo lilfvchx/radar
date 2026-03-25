@@ -7,6 +7,7 @@ import maritimeRouter from './routes/maritime';
 import geoRouter from './routes/geo';
 import monitorRouter from './routes/monitor';
 import cyberRouter from './routes/cyber';
+import arCrimeRouter from './routes/ar_crime';
 import { aircraftDb } from './core/aircraft_db';
 import { initializeDefaultJobs, startScheduler } from './core/scheduler';
 
@@ -21,6 +22,7 @@ app.use('/api/maritime', maritimeRouter);
 app.use('/api/geo', geoRouter);
 app.use('/api/monitor', monitorRouter);
 app.use('/api/cyber', cyberRouter);
+app.use('/api/ar-crime', arCrimeRouter);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 

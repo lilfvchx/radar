@@ -1,4 +1,5 @@
 import * as gpsjam from './source/gpsjam';
+import { runArCrimeIngest } from './source/ar_crime/ingest';
 
 /**
  * Scheduler for periodic data ingestion tasks
@@ -128,6 +129,15 @@ export function initializeDefaultJobs() {
     'GPS Jamming Daily Update',
     6 * 60 * 60 * 1000, // 6 hours
     gpsJammingDailyUpdate,
+  );
+
+  registerJob(
+    'AR Crime OSINT ingest',
+    Number(process.env.AR_CRIME_INGEST_INTERVAL_MS ?? 30 * 60 * 1000),
+    async () => {
+      if (process.env.AR_CRIME_SCHEDULER_ENABLED === 'false') return;
+      await runArCrimeIngest();
+    },
   );
 
   // Add other scheduled jobs here as needed
