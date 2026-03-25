@@ -9,6 +9,7 @@ import monitorRouter from './routes/monitor';
 import cyberRouter from './routes/cyber';
 import arCrimeRouter from './routes/ar_crime';
 import cronRouter from './routes/cron';
+import entitiesRouter from './routes/entities';
 import { aircraftDb } from './core/aircraft_db';
 
 const app = express();
@@ -33,6 +34,7 @@ app.use('/api/monitor', monitorRouter);
 app.use('/api/cyber', cyberRouter);
 app.use('/api/ar-crime', arCrimeRouter);
 app.use('/api/cron', cronRouter);
+app.use('/api/v1/entities', entitiesRouter);
 
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
