@@ -38,74 +38,23 @@ jobs:
           ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "mkdir -p /opt/radar/server"
           scp -o StrictHostKeyChecking=no server/.env $SERVER_USER@$SERVER_IP:/opt/radar/server/.env
 
-      - name: Deploy to server
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-        run: |
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP 'bash -s' << 'ENDSSH'
-            set -e
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
 
-            echo "=== Starting deployment ==="
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
-            cd /opt/radar
+      - name: Build Project Artifacts
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
-            echo "Pulling latest code..."
-            if [ -d ".git" ]; then
-              git fetch origin
-              git reset --hard origin/main
-            else
-              git clone https://github.com/Syntax-Error-1337/radar.git .
-            fi
-
-            echo "Stopping containers..."
-            docker-compose down || true
-
-            docker image prune -f
-
-            echo "Building and starting containers..."
-            docker-compose up -d --build
-
-            echo "Waiting for application to start..."
-            sleep 10
-
-            docker-compose ps
-
-            echo "=== Deployment complete ==="
-          ENDSSH
-
-      - name: Verify deployment
-        env:
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-        run: |
-          ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'ENDSSH'
-            # Check if container is running
-            if docker ps | grep -q radar; then
-              echo "✅ Container is running"
-
-              # Test health endpoint
-              sleep 5
-              if curl -f http://localhost:3001/health > /dev/null 2>&1; then
-                echo "✅ Health check passed"
-              else
-                echo "⚠️  Health check failed"
-                docker logs radar --tail=50
-                exit 1
-              fi
-            else
-              echo "❌ Container failed to start"
-              docker logs radar --tail=50
-              exit 1
-            fi
-          ENDSSH
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Notify deployment status
         if: always()
         run: |
           if [ ${{ job.status }} == 'success' ]; then
-            echo "🚀 Deployment successful!"
-            echo "Application URL: http://${{ secrets.SERVER_IP }}:3001"
+            echo "🚀 Vercel Deployment successful!"
           else
             echo "❌ Deployment failed!"
           fi
