@@ -18,12 +18,15 @@ import {
   GCC_WATCH_LAYER_IDS,
 } from './layerIds';
 import { useGPSJammingStore } from '../gpsJamming.store';
+import { CrimeLayer, CRIME_LAYER_IDS } from '../../ar_crime/components/CrimeLayer';
+import { useCrimeEvents } from '../../ar_crime/hooks/useCrimeEvents';
 
 const ALL_INTERACTIVE_LAYERS = [
   ...MILITARY_BASES_LAYER_IDS,
   ...ROCKET_ALERT_LAYER_IDS,
   ...GULF_WATCH_LAYER_IDS,
   ...GCC_WATCH_LAYER_IDS,
+  ...CRIME_LAYER_IDS,
 ];
 
 const INITIAL_VIEW_STATE = {
@@ -71,7 +74,17 @@ interface GulfPopup {
   country?: string;
 }
 
-type ActivePopup = MilitaryPopup | RocketPopup | GulfPopup;
+interface CrimePopup {
+  kind: 'crime';
+  lng: number;
+  lat: number;
+  summary: string;
+  eventType: string;
+  severity: number;
+  confidence: number;
+}
+
+type ActivePopup = MilitaryPopup | RocketPopup | GulfPopup | CrimePopup;
 
 const ROCKET_TYPE_LABEL: Record<number, string> = { 1: 'ROCKET', 2: 'UAV' };
 
@@ -81,6 +94,10 @@ export function MonitorMap() {
   const { setCurrentRegion } = useOsintStore();
   const gpsJammingEnabled = useGPSJammingStore((s) => s.enabled);
   const [popup, setPopup] = useState<ActivePopup | null>(null);
+  const { data: crimeEvents } = useCrimeEvents({
+    bbox: [-75, -56, -53, -21],
+    minSeverity: 40,
+  });
 
   const activeMapStyle = mapLayer === 'satellite' ? SATELLITE_STYLE : DARK_STYLE;
 
@@ -98,6 +115,20 @@ export function MonitorMap() {
           description: String(p.description ?? ''),
           category: String(p.category ?? 'hq'),
           country: String(p.country ?? ''),
+        });
+        return;
+      }
+
+      if (feature && CRIME_LAYER_IDS.includes(feature.layer.id)) {
+        const p = feature.properties as Record<string, unknown>;
+        setPopup({
+          kind: 'crime',
+          lng: (feature.geometry as GeoJSON.Point).coordinates[0],
+          lat: (feature.geometry as GeoJSON.Point).coordinates[1],
+          summary: String(p.summary ?? ''),
+          eventType: String(p.eventType ?? 'unknown'),
+          severity: Number(p.severity ?? 0),
+          confidence: Number(p.confidence ?? 0),
         });
         return;
       }
@@ -189,6 +220,7 @@ export function MonitorMap() {
         <GulfWatchLayer />
         <GccWatchLayer />
         <RocketAlertLayer />
+        <CrimeLayer events={crimeEvents} />
 
         {/* Popups */}
         {popup && (
@@ -204,8 +236,10 @@ export function MonitorMap() {
               <MilitaryPopupCard popup={popup} onClose={() => setPopup(null)} />
             ) : popup.kind === 'rocket' ? (
               <RocketPopupCard popup={popup} onClose={() => setPopup(null)} />
-            ) : (
+            ) : popup.kind === 'gulf' ? (
               <GulfPopupCard popup={popup} onClose={() => setPopup(null)} />
+            ) : (
+              <CrimePopupCard popup={popup} onClose={() => setPopup(null)} />
             )}
           </Popup>
         )}
@@ -432,6 +466,27 @@ function GulfPopupCard({ popup, onClose }: { popup: GulfPopup; onClose: () => vo
       <div className="border-t border-white/6 pt-1 space-y-1">
         <Row label="Started" value={fmt(popup.startedAt)} />
         <Row label="Expires" value={fmt(popup.expiresAt)} />
+      </div>
+    </PopupShell>
+  );
+}
+
+function CrimePopupCard({ popup, onClose }: { popup: CrimePopup; onClose: () => void }) {
+  return (
+    <PopupShell
+      accentClass="text-red-300"
+      headerBgClass="bg-red-500/10"
+      headerBorderClass="border-red-500/20"
+      dot="bg-red-400"
+      label="Crime OSINT"
+      onClose={onClose}
+    >
+      <div className="space-y-1 text-[10px]">
+        <p className="text-white/90 leading-relaxed">{popup.summary}</p>
+        <p className="text-red-200/90 uppercase">{popup.eventType}</p>
+        <p className="text-white/70">
+          Sev {popup.severity} • Conf {popup.confidence}
+        </p>
       </div>
     </PopupShell>
   );
