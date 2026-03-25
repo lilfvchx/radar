@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Source, Layer } from 'react-map-gl/maplibre';
 import type { FeatureCollection, Point } from 'geojson';
 import type { CrimeEvent } from '../types';
@@ -5,22 +6,29 @@ import type { CrimeEvent } from '../types';
 export const CRIME_LAYER_IDS = ['crime-events-halo', 'crime-events-dot'];
 
 export function CrimeLayer({ events }: { events: CrimeEvent[] }) {
-  const fc: FeatureCollection<Point> = {
-    type: 'FeatureCollection',
-    features: events
-      .filter((e) => e.geo?.lat != null && e.geo?.lon != null)
-      .map((event) => ({
-        type: 'Feature',
-        geometry: { type: 'Point', coordinates: [event.geo!.lon!, event.geo!.lat!] },
-        properties: {
-          id: event.event_id,
-          summary: event.summary,
-          eventType: event.event_type,
-          severity: event.severity_score,
-          confidence: event.confidence_score,
-        },
-      })),
-  };
+  // ⚡ Bolt: Memoize the FeatureCollection to prevent unnecessary re-evaluations
+  // and maintain a stable object reference for MapLibre's Source component.
+  // Impact: Reduces garbage collection and avoids triggering expensive WebGL
+  // updates in react-map-gl on every parent render when events haven't changed.
+  const fc: FeatureCollection<Point> = useMemo(
+    () => ({
+      type: 'FeatureCollection',
+      features: (events || [])
+        .filter((e) => e.geo?.lat != null && e.geo?.lon != null)
+        .map((event) => ({
+          type: 'Feature',
+          geometry: { type: 'Point', coordinates: [event.geo!.lon!, event.geo!.lat!] },
+          properties: {
+            id: event.event_id,
+            summary: event.summary,
+            eventType: event.event_type,
+            severity: event.severity_score,
+            confidence: event.confidence_score,
+          },
+        })),
+    }),
+    [events],
+  );
 
   return (
     <Source id="crime-events-source" type="geojson" data={fc}>
