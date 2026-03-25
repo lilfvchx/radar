@@ -526,3 +526,15 @@ This project is licensed under the **MIT License** — see [LICENSE](LICENSE) fo
 [⬆ Back to top](#intelmap--geospatial-intelligence-platform)
 
 </div>
+
+## GitHub Pages deployment
+
+This repo now ships with GitHub Actions that:
+
+- run CI on pushes/PRs (`.github/workflows/ci.yml`)
+- build + deploy the client to GitHub Pages (`.github/workflows/deploy-pages.yml`)
+
+After enabling **Settings → Pages → Source: GitHub Actions**, every push to `main` will publish at:
+`https://<org-or-user>.github.io/radar/`
+
+You can also trigger a manual deployment from **Actions → Deploy client to GitHub Pages → Run workflow**.
