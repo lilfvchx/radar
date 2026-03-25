@@ -19,3 +19,5 @@ export const GCC_WATCH_LAYER_IDS = GCC_COUNTRIES.flatMap((c) => [
   `gcc-watch-${c}-halo`,
   `gcc-watch-${c}-dot`,
 ]);
+
+export const AR_CRIME_LAYER_IDS = ['ar-crime-halo', 'ar-crime-dot'];

@@ -1,4 +1,5 @@
 import * as gpsjam from './source/gpsjam';
+import { runIngestionPipeline as runArCrimePipeline } from './source/ar_crime/pipeline';
 
 /**
  * Scheduler for periodic data ingestion tasks
@@ -129,6 +130,15 @@ export function initializeDefaultJobs() {
     6 * 60 * 60 * 1000, // 6 hours
     gpsJammingDailyUpdate,
   );
+
+  // AR Crime OSINT: Run every 30 minutes
+  if (process.env.AR_CRIME_SCHEDULER_ENABLED !== 'false') {
+    registerJob(
+      'AR Crime OSINT Ingest',
+      30 * 60 * 1000, // 30 minutes
+      runArCrimePipeline,
+    );
+  }
 
   // Add other scheduled jobs here as needed
 }

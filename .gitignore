@@ -59,3 +59,9 @@ all.sources.rss.yaml
 # Lint / CI output artifacts
 lint_results.txt
 *.lint.txt
+
+# SQLite databases
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+server/data/*.sqlite*

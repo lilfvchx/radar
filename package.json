@@ -53,6 +53,7 @@
     "prepare": "husky"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "concurrently": "^8.2.2",
     "husky": "^9.1.7",
     "lint-staged": "^16.3.2",
@@ -72,5 +73,9 @@
     "*.{json,css,scss,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.8.0",
+    "zod": "^4.3.6"
   }
 }

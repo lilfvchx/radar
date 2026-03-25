@@ -16,14 +16,21 @@ import {
   ROCKET_ALERT_LAYER_IDS,
   GULF_WATCH_LAYER_IDS,
   GCC_WATCH_LAYER_IDS,
+  AR_CRIME_LAYER_IDS,
 } from './layerIds';
 import { useGPSJammingStore } from '../gpsJamming.store';
+import { CrimeLayer } from '../../ar_crime/components/CrimeLayer';
+import { useCrimeEvents } from '../../ar_crime/hooks/useCrimeEvents';
+import { CrimeFilters } from '../../ar_crime/components/CrimeFilters';
+import { CrimeEventDrawer } from '../../ar_crime/components/CrimeEventDrawer';
+import type { CrimeEvent } from '../../ar_crime/types';
 
 const ALL_INTERACTIVE_LAYERS = [
   ...MILITARY_BASES_LAYER_IDS,
   ...ROCKET_ALERT_LAYER_IDS,
   ...GULF_WATCH_LAYER_IDS,
   ...GCC_WATCH_LAYER_IDS,
+  ...AR_CRIME_LAYER_IDS,
 ];
 
 const INITIAL_VIEW_STATE = {
@@ -71,7 +78,14 @@ interface GulfPopup {
   country?: string;
 }
 
-type ActivePopup = MilitaryPopup | RocketPopup | GulfPopup;
+interface ArCrimePopup {
+  kind: 'ar_crime';
+  lng: number;
+  lat: number;
+  event: CrimeEvent;
+}
+
+type ActivePopup = MilitaryPopup | RocketPopup | GulfPopup | ArCrimePopup;
 
 const ROCKET_TYPE_LABEL: Record<number, string> = { 1: 'ROCKET', 2: 'UAV' };
 
@@ -81,6 +95,11 @@ export function MonitorMap() {
   const { setCurrentRegion } = useOsintStore();
   const gpsJammingEnabled = useGPSJammingStore((s) => s.enabled);
   const [popup, setPopup] = useState<ActivePopup | null>(null);
+
+  // Hardcode bbox for Argentina area for the demo
+  const [bbox] = useState<[number, number, number, number]>([-73.5, -55.0, -53.5, -21.0]);
+  const [minSeverity, setMinSeverity] = useState(0);
+  const { data: crimeEvents } = useCrimeEvents({ bbox, minSeverity });
 
   const activeMapStyle = mapLayer === 'satellite' ? SATELLITE_STYLE : DARK_STYLE;
 
@@ -115,6 +134,25 @@ export function MonitorMap() {
           alertTypeId: Number(p.alertTypeId ?? 1),
           countdownSec: Number(p.countdownSec ?? 0),
           timeStamp: String(p.timeStamp ?? ''),
+        });
+        return;
+      }
+
+      if (feature && AR_CRIME_LAYER_IDS.includes(feature.layer.id)) {
+        const p = feature.properties as unknown as CrimeEvent;
+        // Parse sources if they come as stringified JSON from the features
+        let sources = p.sources;
+        if (typeof sources === 'string') {
+          try {
+             sources = JSON.parse(sources);
+          } catch(e) {}
+        }
+
+        setPopup({
+          kind: 'ar_crime',
+          lng: (feature.geometry as GeoJSON.Point).coordinates[0],
+          lat: (feature.geometry as GeoJSON.Point).coordinates[1],
+          event: { ...p, sources },
         });
         return;
       }
@@ -189,9 +227,10 @@ export function MonitorMap() {
         <GulfWatchLayer />
         <GccWatchLayer />
         <RocketAlertLayer />
+        {crimeEvents && crimeEvents.length > 0 && <CrimeLayer events={crimeEvents} />}
 
         {/* Popups */}
-        {popup && (
+        {popup && popup.kind !== 'ar_crime' && (
           <Popup
             longitude={popup.lng}
             latitude={popup.lat}
@@ -211,15 +250,21 @@ export function MonitorMap() {
         )}
       </Map>
 
-      <div className="absolute top-3 left-3 pointer-events-none z-10 tech-panel px-3 py-1.5 shadow-lg">
-        <div className="flex items-center gap-2 text-[11px] font-mono font-bold tracking-wider text-intel-text-light uppercase">
-          <span className="w-1.5 h-1.5 bg-intel-accent rounded-full animate-pulse shadow-[0_0_6px_var(--color-intel-accent)]" />
-          Global Monitor
-        </div>
-      </div>
-
       {/* UAE status legend */}
       <GulfWatchLegend />
+
+      {/* ArCrime Filters */}
+      <div className="absolute top-3 left-3 z-10">
+         <CrimeFilters onFilterChange={(f) => setMinSeverity(f.minSeverity)} />
+      </div>
+
+      {/* ArCrime Event Drawer */}
+      {popup && popup.kind === 'ar_crime' && (
+        <CrimeEventDrawer
+           event={popup.event}
+           onClose={() => setPopup(null)}
+        />
+      )}
     </div>
   );
 }
