@@ -19,3 +19,5 @@ export const GCC_WATCH_LAYER_IDS = GCC_COUNTRIES.flatMap((c) => [
   `gcc-watch-${c}-halo`,
   `gcc-watch-${c}-dot`,
 ]);
+
+export const GPS_JAMMING_LAYER_IDS = ['gps-jamming-fill', 'gps-jamming-outline'];

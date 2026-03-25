@@ -123,7 +123,3 @@ export function GPSJammingLayer() {
     </>
   );
 }
-
-// TODO: Add click-to-popup functionality
-// This requires wiring up onClick handler in parent MonitorMap component
-// with interactiveLayerIds: ['gps-jamming-fill', 'gps-jamming-outline']

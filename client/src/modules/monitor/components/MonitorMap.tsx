@@ -16,6 +16,7 @@ import {
   ROCKET_ALERT_LAYER_IDS,
   GULF_WATCH_LAYER_IDS,
   GCC_WATCH_LAYER_IDS,
+  GPS_JAMMING_LAYER_IDS,
 } from './layerIds';
 import { useGPSJammingStore } from '../gpsJamming.store';
 
@@ -24,6 +25,7 @@ const ALL_INTERACTIVE_LAYERS = [
   ...ROCKET_ALERT_LAYER_IDS,
   ...GULF_WATCH_LAYER_IDS,
   ...GCC_WATCH_LAYER_IDS,
+  ...GPS_JAMMING_LAYER_IDS,
 ];
 
 const INITIAL_VIEW_STATE = {
@@ -71,7 +73,18 @@ interface GulfPopup {
   country?: string;
 }
 
-type ActivePopup = MilitaryPopup | RocketPopup | GulfPopup;
+interface GPSJammingPopup {
+  kind: 'gps-jamming';
+  lng: number;
+  lat: number;
+  h3: string;
+  interference: number;
+  good: number;
+  bad: number;
+  signalType: 'clean' | 'mixed' | 'interfered';
+}
+
+type ActivePopup = MilitaryPopup | RocketPopup | GulfPopup | GPSJammingPopup;
 
 const ROCKET_TYPE_LABEL: Record<number, string> = { 1: 'ROCKET', 2: 'UAV' };
 
@@ -98,6 +111,21 @@ export function MonitorMap() {
           description: String(p.description ?? ''),
           category: String(p.category ?? 'hq'),
           country: String(p.country ?? ''),
+        });
+        return;
+      }
+
+      if (feature && GPS_JAMMING_LAYER_IDS.includes(feature.layer.id)) {
+        const p = feature.properties as Record<string, unknown>;
+        setPopup({
+          kind: 'gps-jamming',
+          lng: Number(p.centerLng ?? 0),
+          lat: Number(p.centerLat ?? 0),
+          h3: String(p.h3 ?? ''),
+          interference: Number(p.interference ?? 0),
+          good: Number(p.good ?? 0),
+          bad: Number(p.bad ?? 0),
+          signalType: p.signalType as 'clean' | 'mixed' | 'interfered',
         });
         return;
       }
@@ -204,6 +232,8 @@ export function MonitorMap() {
               <MilitaryPopupCard popup={popup} onClose={() => setPopup(null)} />
             ) : popup.kind === 'rocket' ? (
               <RocketPopupCard popup={popup} onClose={() => setPopup(null)} />
+            ) : popup.kind === 'gps-jamming' ? (
+              <GPSJammingPopupCard popup={popup} onClose={() => setPopup(null)} />
             ) : (
               <GulfPopupCard popup={popup} onClose={() => setPopup(null)} />
             )}
@@ -326,6 +356,49 @@ function RocketPopupCard({ popup, onClose }: { popup: RocketPopup; onClose: () =
       <div className="border-t border-white/6 pt-1 space-y-1">
         <Row label="Coords" value={`${popup.lat.toFixed(4)}°, ${popup.lng.toFixed(4)}°`} />
         <Row label="Time (IL)" value={popup.timeStamp.slice(0, 16)} />
+      </div>
+    </PopupShell>
+  );
+}
+
+function GPSJammingPopupCard({
+  popup,
+  onClose,
+}: {
+  popup: GPSJammingPopup;
+  onClose: () => void;
+}) {
+  const isInterfered = popup.signalType === 'interfered';
+  const isMixed = popup.signalType === 'mixed';
+
+  const accentClass = isInterfered ? 'text-red-400' : isMixed ? 'text-amber-400' : 'text-green-400';
+  const headerBgClass = isInterfered ? 'bg-red-500/10' : isMixed ? 'bg-amber-500/10' : 'bg-green-500/10';
+  const headerBorderClass = isInterfered ? 'border-red-500/25' : isMixed ? 'border-amber-500/25' : 'border-green-500/25';
+  const dot = isInterfered ? 'bg-red-400' : isMixed ? 'bg-amber-400' : 'bg-green-400';
+
+  return (
+    <PopupShell
+      accentClass={accentClass}
+      headerBgClass={headerBgClass}
+      headerBorderClass={headerBorderClass}
+      dot={dot}
+      label={`GPS JAMMING · SIGNAL ${popup.signalType.toUpperCase()}`}
+      onClose={onClose}
+    >
+      <div>
+        <p className="text-white/90 font-semibold text-[12px] leading-snug">H3: {popup.h3}</p>
+      </div>
+      <div className="space-y-1">
+        <Row
+          label="Interference"
+          value={`${(popup.interference * 100).toFixed(1)}%`}
+          valueClass={accentClass}
+        />
+        <div className="border-t border-white/6 pt-1 space-y-1">
+          <Row label="Good Signals" value={String(popup.good)} valueClass="text-green-400/80" />
+          <Row label="Bad Signals" value={String(popup.bad)} valueClass="text-red-400/80" />
+          <Row label="Coords" value={`${popup.lat.toFixed(4)}°, ${popup.lng.toFixed(4)}°`} />
+        </div>
       </div>
     </PopupShell>
   );
