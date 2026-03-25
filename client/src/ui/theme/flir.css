@@ -113,7 +113,7 @@
 /* ─── Inline style overrides for thermal palette ─────────────────────────── */
 
 /* Critical/danger elements: #ff3366 → Orange-red thermal */
-.theme-flir .bg-\\[\\#ff3366\\],
+.theme-flir .bg-\[\#ff3366\],
 .theme-flir [style*='color: #ff3366'],
 .theme-flir [style*='color:#ff3366'] {
   color: #ff6600 !important;
@@ -122,7 +122,7 @@
 
 .theme-flir [style*='background: #ff3366'],
 .theme-flir [style*='background:#ff3366'],
-.theme-flir .shadow-\\[0_0_8px_\\#ff3366\\] {
+.theme-flir .shadow-\[0_0_8px_\#ff3366\] {
   background: #ff6600 !important;
   box-shadow: 0 0 12px rgba(255, 102, 0, 0.6) !important;
 }
