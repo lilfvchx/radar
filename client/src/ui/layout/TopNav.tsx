@@ -21,9 +21,10 @@ export const TopNav: React.FC = () => {
           </h1>
         </div>
 
-        <nav className="flex gap-4 h-full pt-4">
+        <nav aria-label="Main Navigation" className="flex gap-4 h-full pt-4">
           <button
             onClick={() => setActiveModule('flights')}
+            aria-current={activeModule === 'flights' ? 'page' : undefined}
             className={`px-4 h-full border-b-2 font-mono text-sm tracking-widest uppercase transition-all ${
               activeModule === 'flights'
                 ? 'border-intel-accent text-intel-accent drop-shadow-[0_0_8px_var(--color-intel-accent)] bg-gradient-to-t from-intel-accent/10 to-transparent'
@@ -34,6 +35,7 @@ export const TopNav: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveModule('maritime')}
+            aria-current={activeModule === 'maritime' ? 'page' : undefined}
             className={`px-4 h-full border-b-2 font-mono text-sm tracking-widest uppercase transition-all ${
               activeModule === 'maritime'
                 ? 'border-intel-accent text-intel-accent drop-shadow-[0_0_8px_var(--color-intel-accent)] bg-gradient-to-t from-intel-accent/10 to-transparent'
@@ -44,6 +46,7 @@ export const TopNav: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveModule('monitor')}
+            aria-current={activeModule === 'monitor' ? 'page' : undefined}
             className={`px-4 h-full border-b-2 font-mono text-sm tracking-widest uppercase transition-all ${
               activeModule === 'monitor'
                 ? 'border-intel-accent text-intel-accent drop-shadow-[0_0_8px_var(--color-intel-accent)] bg-gradient-to-t from-intel-accent/10 to-transparent'
@@ -54,6 +57,7 @@ export const TopNav: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveModule('cyber')}
+            aria-current={activeModule === 'cyber' ? 'page' : undefined}
             className={`px-4 h-full border-b-2 font-mono text-sm tracking-widest uppercase transition-all ${
               activeModule === 'cyber'
                 ? 'border-intel-accent text-intel-accent drop-shadow-[0_0_8px_var(--color-intel-accent)] bg-gradient-to-t from-intel-accent/10 to-transparent'
@@ -68,8 +72,12 @@ export const TopNav: React.FC = () => {
       {/* Right side: View toggles */}
       <div className="flex gap-4 items-center h-full text-intel-text font-mono text-xs tracking-wider">
         <div className="flex items-center gap-2 border-r border-intel-accent/30 pr-4 h-8">
-          <span className="opacity-50">PROJECTION:</span>
+          <span id="projection-label" className="opacity-50">
+            PROJECTION:
+          </span>
           <button
+            aria-labelledby="projection-label"
+            aria-live="polite"
             onClick={() => setMapProjection(mapProjection === 'mercator' ? 'globe' : 'mercator')}
             className={`px-3 py-1 bg-intel-bg border border-intel-accent/50 text-intel-accent hover:bg-intel-accent/10 hover:shadow-[0_0_8px_var(--color-intel-accent)] transition-all uppercase`}
           >
@@ -77,11 +85,19 @@ export const TopNav: React.FC = () => {
           </button>
         </div>
 
-        <div className="flex items-center gap-2 h-8">
-          <span className="opacity-50">SENSOR:</span>
+        <div
+          className="flex items-center gap-2 h-8"
+          role="radiogroup"
+          aria-labelledby="sensor-label"
+        >
+          <span id="sensor-label" className="opacity-50">
+            SENSOR:
+          </span>
           {(['eo', 'flir', 'crt'] as const).map((m) => (
             <button
               key={m}
+              role="radio"
+              aria-checked={mode === m}
               onClick={() => setMode(m)}
               className={`px-3 py-1 transition-all uppercase border ${
                 mode === m

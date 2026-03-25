@@ -11,7 +11,7 @@ jest.mock('../../core/source/ar_crime/store/db', () => ({
       severity_score: 90,
       confidence_score: 80,
       geo: { lat: -34.6, lon: -58.4 },
-      dedupe_key: 'dk1'
+      dedupe_key: 'dk1',
     },
     {
       event_id: '2',
@@ -19,18 +19,18 @@ jest.mock('../../core/source/ar_crime/store/db', () => ({
       severity_score: 50,
       confidence_score: 60,
       geo: { lat: -34.7, lon: -58.5 },
-      dedupe_key: 'dk2'
-    }
+      dedupe_key: 'dk2',
+    },
   ]),
   getCrimeEvent: jest.fn().mockResolvedValue({
     event_id: '1',
-    event_type: 'homicide'
+    event_type: 'homicide',
   }),
   getSourceItems: jest.fn().mockResolvedValue([]),
 }));
 
 jest.mock('../../core/source/ar_crime/ingest', () => ({
-  runArCrimeIngest: jest.fn().mockResolvedValue({ sourceCount: 10, eventCount: 5, runId: 'run_1' })
+  runArCrimeIngest: jest.fn().mockResolvedValue({ sourceCount: 10, eventCount: 5, runId: 'run_1' }),
 }));
 
 const app = express();

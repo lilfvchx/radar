@@ -27,6 +27,7 @@ export const ShellLayout: React.FC<ShellLayoutProps> = ({ children }) => {
           href="https://github.com/Syntax-Error-1337/radar"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="GitHub repository (opens in new tab)"
           className="group flex items-center gap-1 transition-all duration-200 hover:text-white"
           style={{ textShadow: 'none' }}
           onMouseEnter={(e) => (e.currentTarget.style.textShadow = '0 0 8px rgba(255,255,255,0.8)')}
@@ -40,6 +41,7 @@ export const ShellLayout: React.FC<ShellLayoutProps> = ({ children }) => {
           href="https://himanshu.pro/"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="Author's Portfolio (opens in new tab)"
           className="group flex items-center gap-1 transition-all duration-200 hover:text-emerald-400"
           style={{ textShadow: 'none' }}
           onMouseEnter={(e) => (e.currentTarget.style.textShadow = '0 0 8px rgba(52,211,153,0.9)')}
@@ -53,6 +55,7 @@ export const ShellLayout: React.FC<ShellLayoutProps> = ({ children }) => {
           href="https://www.linkedin.com/in/bugbounty/"
           target="_blank"
           rel="noopener noreferrer"
+          aria-label="Author's LinkedIn (opens in new tab)"
           className="group flex items-center gap-1 transition-all duration-200 hover:text-sky-400"
           style={{ textShadow: 'none' }}
           onMouseEnter={(e) => (e.currentTarget.style.textShadow = '0 0 8px rgba(56,189,248,0.9)')}

@@ -21,7 +21,7 @@ let isAircraftDbLoaded = false;
 app.use(async (_req, _res, next) => {
   if (!isAircraftDbLoaded) {
     isAircraftDbLoaded = true;
-    aircraftDb.load().catch(e => console.error('Failed to initialize aircraft DB:', e));
+    aircraftDb.load().catch((e) => console.error('Failed to initialize aircraft DB:', e));
   }
   next();
 });
