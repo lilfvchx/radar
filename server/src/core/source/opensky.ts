@@ -114,12 +114,17 @@ export async function fetchStates(): Promise<AircraftState[]> {
 
       const details = aircraftDb.getDetails(icao24);
       if (details) {
-        if (details.registration) baseState.registration = details.registration;
-        if (details.manufacturerName) baseState.manufacturerName = details.manufacturerName;
-        if (details.model) baseState.model = details.model;
-        if (details.operator) baseState.operator = details.operator;
-        if (details.typecode) baseState.typecode = details.typecode;
-        if (details.built) baseState.built = details.built;
+        const props = [
+          'registration',
+          'manufacturerName',
+          'model',
+          'operator',
+          'typecode',
+          'built',
+        ] as const;
+        for (const prop of props) {
+          if (details[prop]) baseState[prop] = details[prop];
+        }
       }
 
       return baseState;
