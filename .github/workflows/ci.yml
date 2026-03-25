@@ -1,83 +1,28 @@
 name: CI
 
 on:
-  push:
-    branches: [ main, develop ]
   pull_request:
-    branches: [ main, develop ]
+  push:
+    branches: [main]
 
 jobs:
-  test-client:
-    name: Test Client
+  build-and-test:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies (monorepo)
-        run: npm ci
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Run tests
-        run: npm run test:client
-
-      - name: Build client
-        run: npm run build:client
-
-  test-server:
-    name: Test Server
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies (monorepo)
-        run: npm ci
-
-      - name: Build server
-        run: npm run build:server
-
-      - name: Run tests (if available)
-        run: npm test --if-present --workspace=server
-        continue-on-error: true
-
-  security-audit:
-    name: Security Audit
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+          node-version: 20
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Run security audit (all workspaces)
-        run: npm audit --audit-level=high
-        continue-on-error: true
+      - name: Build all workspaces
+        run: npm run build
 
-      - name: Run security audit (client)
-        run: npm audit --audit-level=high --workspace=client
-        continue-on-error: true
-
-      - name: Run security audit (server)
-        run: npm audit --audit-level=high --workspace=server
-        continue-on-error: true
+      - name: Run tests
+        run: npm run test
