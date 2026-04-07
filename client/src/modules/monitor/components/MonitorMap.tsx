@@ -292,6 +292,7 @@ function PopupShell({
           </span>
         </div>
         <button
+          aria-label="Close popup"
           onClick={onClose}
           className="text-white/25 hover:text-white/60 transition-colors text-[10px] leading-none ml-2"
         >

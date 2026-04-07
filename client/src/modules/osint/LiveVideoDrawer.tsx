@@ -72,6 +72,7 @@ export const LiveVideoDrawer: React.FC = () => {
           ACTIVE SURVEILLANCE
         </div>
         <button
+          aria-label="Close video drawer"
           onClick={() => setLiveVideoDrawerOpen(false)}
           className="text-intel-text hover:text-intel-text-light transition-colors"
         >
