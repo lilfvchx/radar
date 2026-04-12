@@ -73,7 +73,8 @@ export const LiveVideoDrawer: React.FC = () => {
         </div>
         <button
           onClick={() => setLiveVideoDrawerOpen(false)}
-          className="text-intel-text hover:text-intel-text-light transition-colors"
+          className="text-intel-text hover:text-intel-text-light transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-intel-accent rounded-sm"
+          aria-label="Close panel"
         >
           ✕
         </button>
