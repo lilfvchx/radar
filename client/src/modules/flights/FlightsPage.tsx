@@ -80,6 +80,8 @@ const iconsPromise = Promise.all(
   iconsLoaded = true;
 });
 
+const EMPTY_FC = { type: 'FeatureCollection' as const, features: [] };
+
 export const FlightsPage: React.FC = () => {
   const mapRef = useRef<MapRef>(null);
   const [imagesReady, setImagesReady] = useState(iconsLoaded);
@@ -162,7 +164,7 @@ export const FlightsPage: React.FC = () => {
     }>;
   }>(() => {
     const pathData = (trackHistory as { path?: number[][] })?.path;
-    if (!pathData) return { type: 'FeatureCollection', features: [] };
+    if (!pathData) return EMPTY_FC;
 
     // OpenSky/ADSB paths are arrays of [time, lat, lon...]
     const coordinates = pathData
@@ -173,7 +175,7 @@ export const FlightsPage: React.FC = () => {
       .map((pt: Array<number>) => [pt[2], pt[1]]); // Map to [lon, lat] for GeoJSON
 
     if (coordinates.length < 2) {
-      return { type: 'FeatureCollection', features: [] };
+      return EMPTY_FC;
     }
 
     return {
@@ -449,7 +451,7 @@ export const FlightsPage: React.FC = () => {
 
           {!osintDrawerOpen && (
             <>
-              <Source id="tracks" type="geojson" data={{ type: 'FeatureCollection', features: [] }}>
+              <Source id="tracks" type="geojson" data={EMPTY_FC}>
                 {/* Dim track for unselected aircraft */}
                 <Layer
                   id="aircraft-tracks"
