@@ -19,6 +19,8 @@ import { SATELLITE_STYLE, LIGHT_STYLE, DARK_STYLE, STREET_STYLE } from '../../li
 
 const trackManager = new TrackManager(5);
 
+const EMPTY_FC = { type: 'FeatureCollection' as const, features: [] as never[] };
+
 // Preload the flight.svg icon at module level so it's always available
 let flightIconImg: HTMLImageElement | null = null;
 new Promise<HTMLImageElement>((resolve) => {
@@ -150,8 +152,6 @@ export const FlightsPage: React.FC = () => {
       // We don't call setTracksGeoJSON here anymore since requestAnimationFrame handles it
     }
   }, [states, timestamp]);
-
-  const pointsGeoJSON = useMemo(() => statesToPointGeoJSON(filteredStates), [filteredStates]);
 
   const historicalGeoJSON = useMemo<{
     type: 'FeatureCollection';
@@ -449,7 +449,7 @@ export const FlightsPage: React.FC = () => {
 
           {!osintDrawerOpen && (
             <>
-              <Source id="tracks" type="geojson" data={{ type: 'FeatureCollection', features: [] }}>
+              <Source id="tracks" type="geojson" data={EMPTY_FC}>
                 {/* Dim track for unselected aircraft */}
                 <Layer
                   id="aircraft-tracks"
@@ -493,7 +493,7 @@ export const FlightsPage: React.FC = () => {
 
               {/* Blue halo circle underneath for selected aircraft */}
               {!onboardMode && (
-                <Source id="points-halo" type="geojson" data={pointsGeoJSON}>
+                <Source id="points-halo" type="geojson" data={EMPTY_FC}>
                   <Layer
                     id="aircraft-points-halo"
                     type="circle"
@@ -519,7 +519,7 @@ export const FlightsPage: React.FC = () => {
 
               {/* 2D Icons */}
               {imagesReady && !onboardMode && (
-                <Source id="points" type="geojson" data={pointsGeoJSON}>
+                <Source id="points" type="geojson" data={EMPTY_FC}>
                   <Layer
                     id="aircraft-points"
                     type="symbol"

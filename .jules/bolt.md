@@ -1,3 +1,7 @@
 ## 2024-03-25 - React-Map-GL Source Re-Renders
 **Learning:** In react-map-gl, passing unmemoized FeatureCollection objects to a `<Source>` component triggers expensive WebGL updates and garbage collection on every parent render. This is particularly noticeable when wrapping map layers that re-render frequently due to parent state changes (like popups or region selection).
 **Action:** Always wrap FeatureCollection generation (e.g. array filtering/mapping) in `useMemo` to maintain a stable object reference for MapLibre's Source component when the underlying data props haven't changed.
+
+## 2024-05-24 - Preventing MapLibre Prop Thrashing with requestAnimationFrame
+**Learning:** In `react-map-gl`, if a `<Source>` is being updated manually via `map.getSource('id').setData()` inside a `requestAnimationFrame` loop (like for smooth 60fps tracking), passing a dynamically calculated `data` prop to the React `<Source>` component causes prop-thrashing. React will occasionally overwrite the smooth extrapolated animation with stale state data from the render cycle, and trigger redundant expensive WebGL garbage collections. Inline objects like `data={{ type: 'FeatureCollection', features: [] }}` make this even worse by triggering on every single render.
+**Action:** Always pass a stable `EMPTY_FC` (module constant or `useMemo`) to the `<Source>` `data` prop when managing data updates imperatively via `setData()` in a render loop.
